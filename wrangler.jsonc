@@ -37,12 +37,6 @@
 	 * KV Namespaces
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#kv-namespaces
 	 */
-	"kv_namespaces": [
-		{
-			"binding": "kv-database",
-			"id": "d18eb440e2cd44e0aef2780f6655f46f",
-		}
-	],
 
 	/**
 	 * Cron Triggers
@@ -52,14 +46,6 @@
 	// Runs every day at 01:45 GMT+7 (which is 18:45 UTC the previous day)
 	"crons": ["46 19 * * *"]
 },
-
-  "d1_databases": [
-	{
-	  "binding": "db-tugas",
-	  "database_name": "tugas-kelas",
-	  "database_id": "e89b04e7-683f-4b08-be1b-a0e554d8b1f8"
-	}
-  ]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
