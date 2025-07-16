@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "ai-chatbot",
+	"name": "z0-project-latest",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-06-20",
 	"observability": {
