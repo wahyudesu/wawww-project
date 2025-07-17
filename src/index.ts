@@ -288,6 +288,8 @@ export default {
 	},
 
 };
+
+
 async function handleHelp(baseUrl: string, session: string, APIkey: string, chatId: string, reply_to: string) {
 	const helpText = [
 		'🤖 *Daftar Perintah Bot*',

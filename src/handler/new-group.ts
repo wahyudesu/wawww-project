@@ -1,7 +1,7 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { group, participant_group } from '../data/schema';
+import { group, participant_group } from '../db/schema';
 
 // env: { HYPERDRIVE: { connectionString: string } }
 export async function handleJoinGroupEvent(event: any, env: any) {
