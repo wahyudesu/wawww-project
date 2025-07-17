@@ -13,6 +13,7 @@ import {
 import pantunList from './data/pantun.json';
 // import assignmentCron from './cron/assignment-cron';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { handleJoinGroupEvent } from './handler/new-group';
 
 import { generateObject } from 'ai';
 import { z } from 'zod';
@@ -279,6 +280,14 @@ export default {
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});
 				}
+			}
+
+			if (data.event === "group.v2.join") {
+				await handleJoinGroupEvent(data, env);
+				return new Response(JSON.stringify({ status: "group join processed" }), {
+					status: 200,
+					headers: { "Content-Type": "application/json", ...corsHeaders }
+				});
 			}
 
 			return new Response(JSON.stringify({ status: 'received', event: data }), { status: 200, headers: corsHeaders });

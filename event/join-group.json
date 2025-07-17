@@ -1,23 +1,70 @@
-{
-  "event": "group.v2.join",
-  "session": "default",
-  "payload": {
-    "group": {
-      "id": "1231231232@g.us",
-      "subject": "Work Group",
-      "description": "Group description",
-      "invite": "https://chat.whatsapp.com/invitecode",
-      "membersCanAddNewMember": true,
-      "membersCanSendMessages": true,
-      "newMembersApprovalRequired": true,
-      "participants": [
-        {
-          "id": "99999@c.us",
-          "role": "participant"
-        }
-      ]
-    },
-    "timestamp": 789456123,
-    "_data": {}
-  }
+"Received event":{
+   "id":"evt_01k0bv47x6nkxf90z1xz2b5na7",
+   "timestamp":1752744206247,
+   "event":"group.v2.join",
+   "session":"session_01jx523c9fdzcaev186szgc67h",
+   "metadata":{
+      
+   },
+   "me":{
+      "id":"6282142667503@c.us",
+      "pushName":"z0-chatbot"
+   },
+   "payload":{
+      "timestamp":1752744206246,
+      "group":{
+         "id":"120363400511869968@g.us",
+         "subject":"bot baru",
+         "participants":[
+            {
+               "id":"6282142667503@c.us",
+               "role":"participant"
+            },
+            {
+               "id":"6285174346212@c.us",
+               "role":"superadmin"
+            }
+         ],
+         "membersCanAddNewMember":false,
+         "membersCanSendMessages":false,
+         "newMembersApprovalRequired":false
+      },
+      "_data":{
+         "id":"120363400511869968@g.us",
+         "subject":"bot baru",
+         "subjectOwner":"6285174346212@s.whatsapp.net",
+         "subjectTime":1752655615,
+         "size":2,
+         "creation":1752655615,
+         "owner":"6285174346212@s.whatsapp.net",
+         "restrict":false,
+         "announce":false,
+         "isCommunity":false,
+         "isCommunityAnnounce":false,
+         "joinApprovalMode":false,
+         "memberAddMode":false,
+         "participants":[
+            {
+               "id":"6282142667503@s.whatsapp.net",
+               "pn":"6282142667503@s.whatsapp.net",
+               "lid":"193428717568201@lid",
+               "admin":null
+            },
+            {
+               "id":"6285174346212@s.whatsapp.net",
+               "pn":"6285174346212@s.whatsapp.net",
+               "lid":"14397099512030@lid",
+               "admin":"superadmin"
+            }
+         ],
+         "ephemeralDuration":0
+      }
+   },
+   "engine":"NOWEB",
+   "environment":{
+      "version":"2025.6.3",
+      "engine":"NOWEB",
+      "tier":"PLUS",
+      "browser":null
+   }
 }
