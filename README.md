@@ -23,8 +23,8 @@ cooming soon (frontend)
 - [ ] tambahin data pantun yang berkualitas
 - [x] tiap kali berada di grup baru, otomatis insert data di db
 - [ ] sesuaikan lagi schema.ts 
-- [ ] tambahin fitur bitcoin
-- [ ] tambahin fitur soal math
+- [x] tambahin fitur bitcoin
+- [x] tambahin fitur soal math
 - [ ] tambahin fitur soal math difficult easy, medium, hard
 - [ ] fitur tagall admin
 - [ ] ubah assignment dari sqlite ke drizzle orm
@@ -36,3 +36,4 @@ cooming soon (frontend)
 - [ ] fitur note dihapus setelah X
 
 </details>
+

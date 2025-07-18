@@ -9,6 +9,9 @@ import {
 	checkToxic,
 	getToxicWarning,
 	handleDevInfo,
+	generateMathQuestions,
+	formatMathQuiz,
+	checkMathAnswers,
 } from './functions';
 import pantunList from './data/pantun.json';
 // import assignmentCron from './cron/assignment-cron';
@@ -226,6 +229,80 @@ export default {
 						}),
 					});
 					return new Response(JSON.stringify({ status: 'pantun sent', pantun: pantunText }), {
+						status: 200,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				} catch (e: any) {
+					return new Response(JSON.stringify({ error: e.message }), {
+						status: 500,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+			}
+
+			// Command /bitcoin
+			if (text === '/bitcoin' && chatId && reply_to) {
+				try {
+					const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+					const data: { bitcoin?: { usd?: number } } = await resp.json();
+					const price = data && data.bitcoin && typeof data.bitcoin.usd === 'number' ? data.bitcoin.usd : undefined;
+					let msg;
+					if (price !== undefined) {
+						msg = `💰 Harga Bitcoin saat ini: $${price} USD`;
+					} else {
+						msg = 'Gagal mengambil harga Bitcoin.';
+					}
+					await fetch(baseUrl + '/api/sendText', {
+						method: 'POST',
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'X-Api-Key': APIkey,
+						},
+						body: JSON.stringify({
+							chatId: chatId,
+							reply_to: reply_to,
+							text: msg,
+							session: session,
+						}),
+					});
+					return new Response(JSON.stringify({ status: 'bitcoin sent', price: price }), {
+						status: 200,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				} catch (e: any) {
+					return new Response(JSON.stringify({ error: e.message }), {
+						status: 500,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+			}
+
+			// Command /math
+			if (text === '/math' && chatId && reply_to) {
+				try {
+					const questions = generateMathQuestions(3);
+					const mathQuiz = formatMathQuiz(questions);
+					
+					// Store questions in a simple in-memory store (ideally use database)
+					const quizKey = `${chatId}_${reply_to}_math`;
+					// You would store questions[quizKey] = questions in a database
+					
+					await fetch(baseUrl + '/api/sendText', {
+						method: 'POST',
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'X-Api-Key': APIkey,
+						},
+						body: JSON.stringify({
+							chatId: chatId,
+							reply_to: reply_to,
+							text: mathQuiz,
+							session: session,
+						}),
+					});
+					return new Response(JSON.stringify({ status: 'math quiz sent', questions: questions }), {
 						status: 200,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});

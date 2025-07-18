@@ -3,7 +3,7 @@ import { pgTable, varchar, text, date, smallint } from 'drizzle-orm/pg-core';
 
 // USER
 export const user = pgTable('user', {
-	id: varchar().primaryKey(),
+	id: varchar().primaryKey(), //ganti uuid
 	status: varchar({ length: 50 }).references(() => status.id),
 	name: varchar({ length: 100 }).notNull(),
 	no: varchar({ length: 15 }).notNull(),
