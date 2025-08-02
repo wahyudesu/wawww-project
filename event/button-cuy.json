@@ -1,0 +1,137 @@
+{
+  "id": "evt_01k1mv2n5k3q8hf1dqh6ay4q70",
+  "session": "session_01jx523c9fdzcaev186szgc67h",
+  "event": "message",
+  "payload": {
+    "id": "false_120363420424851537@g.us_Laurine-9CCD624CE8FF_6285717539388@c.us",
+    "timestamp": 1754119885,
+    "from": "120363420424851537@g.us",
+    "fromMe": false,
+    "source": "app",
+    "body": null,
+    "to": "120363420424851537@g.us",
+    "participant": "6285717539388@c.us",
+    "hasMedia": false,
+    "media": null,
+    "ack": 2,
+    "ackName": "DEVICE",
+    "replyTo": null,
+    "_data": {
+      "key": {
+        "remoteJid": "120363420424851537@g.us",
+        "fromMe": false,
+        "id": "Laurine-9CCD624CE8FF",
+        "participant": "6285717539388@s.whatsapp.net",
+        "participantLid": "174522355478712@lid"
+      },
+      "messageTimestamp": 1754119885,
+      "pushName": "krnBot",
+      "broadcast": false,
+      "message": {
+        "viewOnceMessage": {
+          "message": {
+            "messageContextInfo": {
+              "deviceListMetadata": {},
+              "deviceListMetadataVersion": 2
+            },
+            "interactiveMessage": {
+              "header": {
+                "title": "",
+                "subtitle": "",
+                "imageMessage": {
+                  "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m239/AQM8RS1eRAGQ5X_yPdxycgYO8ytppyv25SEyABJslhllHfY2A7GWfr9B1XZ_btzJwNEtd-NC-mJUv-k0OnF_KRODeA1w0sSvOI9baIGPpA?ccb=9-4&oh=01_Q5Aa2AE-ZRdhyxRtp-caxQh6RXzKIHuquCr8NNDwpao7QrpA0w&oe=68B53BB3&_nc_sid=e6ed6c&mms3=true",
+                  "mimetype": "image/jpeg",
+                  "fileSha256": "0ODX3mXLtHnSDYuwKelj7cQKGUdwbAmbPZLcE3e2lYk=",
+                  "fileLength": "64908",
+                  "height": 772,
+                  "width": 736,
+                  "mediaKey": "i+BJvfbYXbus+SBVhTPENg2KTTYoSb0od61M4GRBCgM=",
+                  "fileEncSha256": "1TLt7R4waI8v0jVcHED1cSjwtP8/GnxLFdnBq6wLJSQ=",
+                  "directPath": "/o1/v/t24/f2/m239/AQM8RS1eRAGQ5X_yPdxycgYO8ytppyv25SEyABJslhllHfY2A7GWfr9B1XZ_btzJwNEtd-NC-mJUv-k0OnF_KRODeA1w0sSvOI9baIGPpA?ccb=9-4&oh=01_Q5Aa2AE-ZRdhyxRtp-caxQh6RXzKIHuquCr8NNDwpao7QrpA0w&oe=68B53BB3&_nc_sid=e6ed6c",
+                  "mediaKeyTimestamp": "1754119885",
+                  "jpegThumbnail": "/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAAhACADASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAABAMAAgb/xAArEAACAgECAwcEAwAAAAAAAAABAgMRAAQSEyExBSIyNFFxckFCQ2FzwdH/xAAYAQEBAAMAAAAAAAAAAAAAAAADAgABBP/EAB8RAAIBAwUBAAAAAAAAAAAAAAACAQMhMRESMlFxIv/aAAwDAQACEQMRAD8A9Og08UAechdxrcx6X0yiqqNtjBPPmcHJFLqdYqzIqaeLay873mup9AMXxCIhw13d6vb94rT3JCr0IYcTTsGNkcxkViqr9M7ici6HNavKB0JJqjkb9saG2XdcEd6uSACKqumcpJM7bIo7YEgktQH+4iXUxAqEIZzyGH1JWCQQmQK7mhfOzmNNikzYakLEkHw19MPrC8Mb8FNzqO6pPU5xB2kV1CwcNiCLDjwnJ9q6maKDfEtu7BRQ9cFqnzbIkJOsakvvPtg+0PP6b+Q/1mzY1XjBFDMivzt8jlp/Lx/PNmzkq8Z9HTK+H//Z",
+                  "annotations": [
+                    {
+                      "polygonVertices": [
+                        {
+                          "x": 60.71664810180664,
+                          "y": -36.39784622192383
+                        },
+                        {
+                          "x": -16.710189819335938,
+                          "y": 49.263675689697266
+                        },
+                        {
+                          "x": -56.585853576660156,
+                          "y": 37.85963439941406
+                        },
+                        {
+                          "x": 20.840980529785156,
+                          "y": -47.80188751220703
+                        }
+                      ],
+                      "newsletter": {
+                        "newsletterJid": "120363301416835342@newsletter",
+                        "serverMessageId": 0,
+                        "newsletterName": "-",
+                        "contentType": "UPDATE"
+                      }
+                    }
+                  ]
+                },
+                "hasMediaAttachment": true
+              },
+              "body": {
+                "text": "◤─「 `OPEN AI` 」─✦\n│⦿ 〔 _.leptonai_\n│⦿ 〔 _.openai_\n│⦿ 〔 _.ai_\n│⦿ 〔 _.hutaoai_\n│⦿ 〔 _.bard_\n│⦿ 〔 _.prodia_\n│⦿ 〔 _.diffusion-anime_\n│⦿ 〔 _.travel-assistant_\n│⦿ 〔 _.ocr_\n│⦿ 〔 _.guru-ai_\n│⦿ 〔 _.emi-ai_\n│⦿ 〔 _.claude-ai_\n│⦿ 〔 _.costume-ai_\n│⦿ 〔 _.herc-ai_\n│⦿ 〔 _.hercai-cartoon_\n│⦿ 〔 _.hercai-animefy_\n│⦿ 〔 _.hercai-lexica_\n│⦿ 〔 _.hercai-prodia_\n│⦿ 〔 _.hercai-simurg_\n│⦿ 〔 _.hercai-raava_\n│⦿ 〔 _.hercai-shonin_\n│⦿ 〔 _.realistic_\n│⦿ 〔 _.3dmodel_\n│⦿ 〔 _.jadizombie_\n│⦿ 〔 _.blackboxai_\n│⦿ 〔 _.photoleapai_\n│⦿ 〔 _.diffusion_\n│⦿ 〔 _.indo-ai_\n│⦿ 〔 _.lamaai_\n│⦿ 〔 _.aivo_\n│⦿ 〔 _.gemini_\n│⦿ 〔 _.text2img_\n│⦿ 〔 _.absolutely_\n│⦿ 〔 _.dalle_\n│⦿ 〔 _.bingimg_\n│⦿ 〔 _.bingai_\n│⦿ 〔 _.gptimg_\n│⦿ 〔 _.gpt4_\n│⦿ 〔 _.gpt4_2_\n│⦿ 〔 _.anything_\n│⦿ 〔 _.hdvid_\n│⦿ 〔 _.cai_\n│⦿ 〔 _.youai_\n│⦿ 〔 _.remini_\n│⦿ 〔 _.jadianime_\n│⦿ 〔 _.removebg_\n│⦿ 〔 _.nulis_\n◣──────────❈"
+              },
+              "footer": {
+                "text": "© ғᴀʟʟᴢx ɪɴғɪɴɪᴛʏ | ᴅᴇᴠ"
+              },
+              "nativeFlowMessage": {
+                "buttons": [
+                  {
+                    "name": "single_select",
+                    "buttonParamsJson": "{\"title\":\"🫧 sᴇʟᴇᴄᴛ ᴍᴇɴᴜ\",\"sections\":[{\"title\":\"ʟɪsᴛ ʏᴀɴɢ sᴇʀɪɴɢ ᴅɪᴘᴀᴋᴀɪ\",\"highlight_label\":\".ᴘᴏᴘᴜʟᴇʀ\",\"rows\":[{\"header\":\"🌐 𝐀𝐥𝐥 𝐦𝐞𝐧𝐮\",\"title\":\"📡ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ᴍᴇɴᴜ ᴀʟʟ\",\"id\":\".allmenu\"}]},{\"title\":\"Minecraft status fitur\",\"highlight_label\":\"\",\"rows\":[{\"header\":\"🗄 𝐌𝐜 𝐬𝐭𝐚𝐭𝐮𝐬\",\"title\":\"🔔ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴍᴄ ᴍᴇɴᴜ\",\"id\":\".mcstatus\"}]},{\"title\":\"ɴᴇᴡ ᴜᴘᴅᴀᴛᴇ\",\"highlight_label\":\"ᴘᴇᴍʙᴀʀᴜᴀɴ ғɪᴛᴜʀ\",\"rows\":[{\"header\":\"🗳 𝐍𝐞𝐰 𝐮𝐩𝐝𝐚𝐭𝐞𝐬\",\"title\":\"📣ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ғɪᴛᴜʀ ᴛᴇʀʙᴀʀᴜ\",\"id\":\".newupdatebutton\"},{\"header\":\"🔨 𝐅𝐢𝐱 𝐟𝐢𝐭𝐮𝐫\",\"title\":\"⚜ᴍᴇʟɪʜᴀᴛ ғɪᴛᴜʀ ʏᴀɴɢ ᴅɪ ғɪx\",\"id\":\".fixbutton\"}]},{\"title\":\"ʟɪsᴛ ᴍᴇɴᴜ ʏᴀɴɢ ᴅɪᴘɪsᴀʜᴋᴀɴ\",\"highlight_label\":\"\",\"rows\":[{\"header\":\"🔐 𝐏𝐞𝐫𝐚𝐭𝐮𝐫𝐚𝐧\",\"title\":\"❗ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ʀᴜʟᴇs ʙᴏᴛ\",\"id\":\".bacaperaturanbutton\"},{\"header\":\"🗃 𝐃𝐨𝐧𝐚𝐬𝐢\",\"title\":\"💠ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴅᴏɴᴀsɪ ᴍᴇɴᴜ\",\"id\":\".donasibutton\"},{\"header\":\"🎞 𝐀𝐢 𝐦𝐞𝐧𝐮\",\"title\":\"🥏ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ᴀɪ ᴍᴇɴᴜ\",\"id\":\".aimenubutton\"},{\"header\":\"🎩 𝐅𝐮𝐧 𝐦𝐞𝐧𝐮\",\"title\":\"🍀ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴍᴇɴᴜ ғᴜɴ\",\"id\":\".funmenubutton\"},{\"header\":\"🎮 𝐑𝐏𝐆 𝐦𝐞𝐧𝐮\",\"title\":\"🗄ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ʀᴘɢ ᴍᴇɴᴜ\",\"id\":\".rpgmenubutton\"},{\"header\":\"🔎 𝐏𝐮𝐬𝐡 𝐦𝐞𝐧𝐮\",\"title\":\"🍂ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴍᴇɴᴜ ᴘᴜsʜ\",\"id\":\".pushmenubutton\"},{\"header\":\"🗯️ 𝐀𝐬𝐮𝐩𝐚𝐧 𝐦𝐞𝐧𝐮\",\"title\":\"🔖ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ᴀsᴜᴘᴀɴ ᴍᴇɴᴜ\",\"id\":\".nsfwmenubutton\"},{\"header\":\"💻 𝐆𝐚𝐦𝐞 𝐦𝐞𝐧𝐮\",\"title\":\"⚔️ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ɢᴀᴍᴇ ᴍᴇɴᴜ\",\"id\":\".gamemenubutton\"},{\"header\":\"🛒𝐒𝐭𝐨𝐫𝐞 𝐦𝐞𝐧𝐮\",\"title\":\"📠Untuᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ sᴛᴏʀᴇ ᴍᴇɴᴜ\",\"id\":\".storemenubutton\"},{\"header\":\"🍉 𝐀𝐧𝐢𝐦𝐞 𝐦𝐞𝐧𝐮\",\"title\":\"📻 ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ᴀɴɪᴍᴇ ᴍᴇɴᴜ\",\"id\":\".animebutton\"},{\"header\":\"💥 𝐎𝐭𝐡𝐞𝐫 𝐦𝐞𝐧𝐮\",\"title\":\"🍁ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴛᴀᴍʙᴀʜᴀɴ ᴍᴇɴᴜ\",\"id\":\".othermenubutton\"},{\"header\":\"🧭 𝐎𝐰𝐧𝐞𝐫 𝐦𝐞𝐧𝐮\",\"title\":\"🔑 ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ᴏᴡɴᴇʀ ᴍᴇɴᴜ\",\"id\":\".ownermenubutton\"},{\"header\":\"🎴 𝐆𝐫𝐮𝐩 𝐦𝐞𝐧𝐮\",\"title\":\"🍁 ᴜɴᴛᴜᴋ ᴍᴇɴɪʜᴀᴛ ʟɪsᴛ ɢʀᴜᴘ ᴍᴇɴᴜ\",\"id\":\".groupmenubutton\"},{\"header\":\"🕋 𝐈𝐬𝐥𝐚𝐦𝐢𝐜 𝐦𝐞𝐧𝐮\",\"title\":\"🕌ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ɪsʟᴀᴍɪᴄ ᴍᴇɴᴜ\",\"id\":\".islamimenubutton\"},{\"header\":\"🚀 𝐁𝐞𝐫𝐢𝐭𝐚 𝐦𝐞𝐧𝐮\",\"title\":\"📖ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ʙᴇʀɪᴛᴀ ᴍᴇɴᴜ\",\"id\":\".beritamenubutton\"},{\"header\":\"🌈 𝐐𝐨𝐮𝐭𝐞𝐬 𝐦𝐞𝐧𝐮\",\"title\":\"📯ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ǫᴏᴜᴛᴇs ᴍᴇɴᴜ\",\"id\":\".quotesmenubutton\"},{\"header\":\"🖼 𝐒𝐭𝐢𝐜𝐤𝐞𝐫 𝐦𝐞𝐧𝐮\",\"title\":\"🦅ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ sᴛɪᴄᴋᴇʀ ᴍᴇɴᴜ\",\"id\":\".stickermenubutton\"},{\"header\":\"🎤 𝐒𝐭𝐚𝐥𝐤𝐢𝐧𝐠 𝐦𝐞𝐧𝐮\",\"title\":\"📠ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ sᴛᴀʟᴋɪɴɢ ᴍᴇɴᴜ\",\"id\":\".stalkermenubutton\"},{\"header\":\"📱 𝐏𝐫𝐢𝐦𝐛𝐨𝐧 𝐦𝐞𝐧𝐮\",\"title\":\"🔫ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴘʀɪᴍʙᴏɴ ᴍᴇɴᴜ\",\"id\":\".primbonmenubutton\"},{\"header\":\"📠 𝐂𝐞𝐫𝐭𝐢𝐟𝐢𝐜𝐚𝐭𝐞 𝐦𝐞𝐧𝐮\",\"title\":\"💳ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ sᴇʀᴛɪғɪᴋᴀᴛ ᴍᴇɴᴜ\",\"id\":\".sertifikatmenubutton\"},{\"header\":\"♻️ 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐦𝐞𝐧𝐮\",\"title\":\"🗃 ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇɴᴜ\",\"id\":\".downloadmenubutton\"},{\"header\":\"📸 𝐄𝐩𝐡𝐨𝐭𝐨 𝐦𝐞𝐧𝐮\",\"title\":\"📷ᴜɴᴛᴜᴋ ᴍᴇʟɪʜᴀᴛ ʟɪsᴛ ᴇᴘʜᴏᴛᴏ ᴍᴇɴᴜ\",\"id\":\".ephoto360menubutton\"},{\"header\":\"🎭 𝐀𝐧𝐨𝐧𝐲𝐦𝐨𝐮𝐬 𝐦𝐞𝐧𝐮\",\"title\":\"🥇ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ᴀɴᴏɴʏᴍᴏᴜs ᴍᴇɴᴜ\",\"description\":\"© ʀɪxǫᴢᴏғғᴄ | ᴅᴇᴠ\",\"id\":\".anonymousmenubutton\"},{\"header\":\"🎲 𝐑𝐚𝐧𝐝𝐨𝐧 𝐯𝐢𝐝𝐞𝐨\",\"title\":\"🎯ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ʀᴀɴᴅᴏᴍ ᴠɪᴅᴇᴏ ᴍᴇɴᴜ\",\"description\":\"© ʀɪxǫᴢᴏғғᴄ | ᴅᴇᴠ\",\"id\":\".randomvideomenubutton\"},{\"header\":\"🎬 𝐑𝐚𝐧𝐝𝐨𝐦 𝐩𝐡𝐨𝐭𝐨\",\"title\":\"🎺ᴍᴇɴᴀᴍᴘɪʟᴋᴀɴ ʀᴀɴᴅᴏᴍ ᴘʜᴏᴛᴏ ᴍᴇɴᴜ\",\"id\":\".randomphotomenubutton\"}]},{\"title\":\"ɪɴғᴏʀᴍᴀsɪ ʏᴏɪᴍɪʏᴀ ᴀssɪsᴛᴇɴᴛ\",\"highlight_label\":\"POPULER\",\"rows\":[{\"title\":\"🎗 ɪɴғᴏ ʙᴏᴛ\",\"description\":\"ɪɴғᴏʀᴍᴀsɪ ʙᴏᴛ\",\"id\":\".infobot\"},{\"title\":\"💫 ᴍᴇɴᴜ sɪᴍᴘʟᴇ\",\"description\":\"ᴋᴇᴍʙᴀʟɪ ᴋᴇ ᴍᴇɴᴜ sɪᴍᴘᴇʟ\",\"id\":\".menu\"}]}]}"
+                  }
+                ]
+              },
+              "contextInfo": {
+                "stanzaId": "D47BA11BAD624F0ACB4DAF3EE62FBD56",
+                "participant": "120363420424851537@g.us",
+                "quotedMessage": {
+                  "extendedTextMessage": {
+                    "text": ".aimenubutton"
+                  }
+                },
+                "mentionedJid": [
+                  "6282142667503@s.whatsapp.net"
+                ],
+                "forwardingScore": 999999,
+                "isForwarded": true,
+                "forwardedNewsletterMessageInfo": {
+                  "newsletterJid": "120363186130999681@newsletter",
+                  "serverMessageId": 145,
+                  "newsletterName": "Furina Assistant • Bot WhatsApp"
+                }
+              }
+            }
+          }
+        }
+      },
+      "status": 3
+    }
+  },
+  "timestamp": 1754119886003,
+  "metadata": {},
+  "me": {
+    "id": "6282142667503@c.us",
+    "pushName": "z0-chatbot"
+  },
+  "engine": "NOWEB",
+  "environment": {
+    "version": "2025.7.8",
+    "engine": "NOWEB",
+    "tier": "PLUS",
+    "browser": null
+  }
+}

@@ -242,7 +242,70 @@ export default {
 				}
 			}
 
-						// Command /doaharian
+			if (text === '/button' && chatId && reply_to) {
+				try {
+					// Ambil pantun acak
+					const pantunArr = pantunList;
+					const idx = Math.floor(Math.random() * pantunArr.length);
+					const pantun = pantunArr[idx];
+					// Gabungkan baris pantun
+					const pantunText = pantun.map(bait => bait.join('\n')).join('\n\n');
+
+					await fetch(baseUrl + '/api/sendText', {
+						method: 'POST',
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'X-Api-Key': APIkey,
+						},
+						body: JSON.stringify({
+							chatId: chatId,
+							header: "How are you?",
+								"headerImage": {
+									"mimetype": "image/jpeg",
+									"filename": "filename.jpg",
+									"url": "https://github.com/devlikeapro/waha/raw/core/examples/waha.jpg"
+								},
+							footer: "If you have any questions, please send it in the chat",
+							buttons: [
+								{
+									"type": "reply",
+									"text": "I am good!"
+								},
+								{
+									"type": "call",
+									"text": "Call us",
+									"phoneNumber": "+1234567890"
+								},
+								{
+									"type": "copy",
+									"text": "Copy code",
+									"copyCode": "4321"
+								},
+								{
+									"type": "url",
+									"text": "How did you do that?",
+									"url": "https://waha.devlike.pro"
+								}
+							],
+							reply_to: reply_to,
+							text: pantunText,
+							session: session,
+						}),
+					});
+					return new Response(JSON.stringify({ status: 'pantun sent', pantun: pantunText }), {
+						status: 200,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				} catch (e: any) {
+					return new Response(JSON.stringify({ error: e.message }), {
+						status: 500,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+			}
+
+			// Command /doaharian
 			if (text === '/doaharian' && chatId && reply_to) {
 				try {
 					const doaArr = doaHarianList;
