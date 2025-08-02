@@ -282,7 +282,7 @@ export default {
 							session: session,
 						}),
 					});
-					return new Response(JSON.stringify({ status: 'pantun sent', pantun: pantunText }), {
+					return new Response(JSON.stringify({ status: 'button sent' }), {
 						status: 200,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});
