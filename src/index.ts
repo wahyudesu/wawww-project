@@ -244,12 +244,6 @@ export default {
 
 			if (text === '/button' && chatId && reply_to) {
 				try {
-					// Ambil pantun acak
-					const pantunArr = pantunList;
-					const idx = Math.floor(Math.random() * pantunArr.length);
-					const pantun = pantunArr[idx];
-					// Gabungkan baris pantun
-					const pantunText = pantun.map(bait => bait.join('\n')).join('\n\n');
 
 					await fetch(baseUrl + '/api/sendText', {
 						method: 'POST',
@@ -289,7 +283,6 @@ export default {
 								}
 							],
 							reply_to: reply_to,
-							text: pantunText,
 							session: session,
 						}),
 					});
