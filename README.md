@@ -4,6 +4,18 @@ https://whimsical.com/overview-WMefErubCu4WLBYiLNkGEC (Whiteboard+docs)
 
 cooming soon (frontend)
 
+# Main point
+- chatbot that's actually replacing humans
+- chatbot that's actually cool (have a lot useful feature)
+- chatbot that's hard to replicate (complex architecture)
+
+
+# Use case
+- playing some game(tebak-tebakan)
+- Moderator grup(share link)
+- Islamic feature
+- 
+
 # Roadmap
 
 <details>
@@ -22,7 +34,9 @@ cooming soon (frontend)
 - [x] tambahin fungsi pantun
 - [ ] tambahin data pantun yang berkualitas
 - [x] tiap kali berada di grup baru, otomatis insert data di db
-- [ ] sesuaikan lagi schema.ts 
+- [x] sesuaikan lagi schema.ts
+- [ ] implementasi fitur quiz
+- [ ] implementasi banyak api yang bisa dipake
 - [x] tambahin fitur bitcoin
 - [x] tambahin fitur soal math
 - [ ] tambahin fitur soal math difficult easy, medium, hard

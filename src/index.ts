@@ -373,6 +373,50 @@ export default {
 				}
 			}
 
+						if (text === '/bitcoin' && chatId && reply_to) {
+				try {
+					// Fetch USD price
+					const respUsd = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+					const dataUsd: { bitcoin?: { usd?: number } } = await respUsd.json();
+					const priceUsd = dataUsd?.bitcoin?.usd;
+
+					// Fetch IDR price
+					const respIdr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=idr');
+					const dataIdr: { bitcoin?: { idr?: number } } = await respIdr.json();
+					const priceIdr = dataIdr?.bitcoin?.idr;
+
+					let msg;
+					if (typeof priceUsd === 'number' && typeof priceIdr === 'number') {
+						msg = `💰 Harga Bitcoin saat ini:\nIDR: Rp${priceIdr.toLocaleString('id-ID')}\nUSD: $${priceUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+					} else {
+						msg = 'Gagal mengambil harga Bitcoin.';
+					}
+					await fetch(baseUrl + '/api/sendText', {
+						method: 'POST',
+						headers: {
+							accept: 'application/json',
+							'Content-Type': 'application/json',
+							'X-Api-Key': APIkey,
+						},
+						body: JSON.stringify({
+							chatId: chatId,
+							reply_to: reply_to,
+							text: msg,
+							session: session,
+						}),
+					});
+					return new Response(JSON.stringify({ status: 'bitcoin sent', priceUsd, priceIdr }), {
+						status: 200,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				} catch (e: any) {
+					return new Response(JSON.stringify({ error: e.message }), {
+						status: 500,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+			}
+
 			// Command /math
 			if (text === '/math' && chatId && reply_to) {
 				try {
