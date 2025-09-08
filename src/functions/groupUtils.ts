@@ -17,7 +17,11 @@ export async function getGroupParticipants(baseUrl: string, session: string, cha
 		throw new Error('Participants response is not an array');
 	}
 	// Extract and return only the 'id' values, converting format
-	const participantIds = participantsJson.map((participant: { id: string }) => participant.id.replace('@s.whatsapp.net', '@c.us'));
+	// Use jid (real phone number) if available, fallback to id
+	const participantIds = participantsJson.map((participant: any) => {
+		const phoneId = participant.jid || participant.id;
+		return phoneId.replace('@s.whatsapp.net', '@c.us');
+	});
 	return participantIds;
 }
 
