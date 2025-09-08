@@ -27,7 +27,16 @@ export async function getGroupParticipants(baseUrl: string, session: string, cha
 
 // Function to mention all group members
 export async function mentionAll(baseUrl: string, session: string, chatId: string, apiKey: string) {
-	const participants = await getGroupParticipants(baseUrl, session, chatId, apiKey);
+	let participants = await getGroupParticipants(baseUrl, session, chatId, apiKey);
+
+	// Filter out specific numbers for specific group
+	if (chatId === '120363144655427837@g.us') {
+		participants = participants.filter((id: string) => {
+			const phoneNumber = id.replace('@c.us', '');
+			return phoneNumber !== '6285655268926' && phoneNumber !== '6282147200531';
+		});
+	}
+
 	const response = await fetch(`${baseUrl}/api/sendText`, {
 		method: 'POST',
 		headers: {
