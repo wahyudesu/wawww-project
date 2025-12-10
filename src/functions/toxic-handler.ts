@@ -8,11 +8,12 @@ const TOXIC_WORDS = [
 	'tolol',
 	'ngentot',
 	'brengsek',
-	'setan',
 	'jancok',
+	'jembod',
 	'bajingan',
 	'keparat',
 	'nigger',
+	// 'cok',
 ];
 
 export function checkToxic(text: string): { isToxic: boolean; found: string[] } {
