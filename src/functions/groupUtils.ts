@@ -35,27 +35,19 @@ export async function mentionAll(baseUrl: string, session: string, chatId: strin
 		return phoneNumber !== '6285655268926' && phoneNumber !== '6282147200531' && phoneNumber !== '6281230701259' && phoneNumber !== '628885553273' && phoneNumber !== '6281326966110';
 	});
 
-	// Buat mention text dengan format yang benar
-	// Untuk menghindari "@lid", kita perlu memastikan format mention benar
-	// Gunakan format @[nomor] dengan spasi yang tepat
-	const mentionText = participants
+	// Buat mention text dengan format @[nomor]
+	let mentionText = participants
 		.map((id: string) => {
-			// Pastikan format ID benar dan bersih
-			let cleanId = id.trim();
-			// Normalize format ke @c.us
-			if (cleanId.includes('@s.whatsapp.net')) {
-				cleanId = cleanId.replace('@s.whatsapp.net', '@c.us');
-			}
-			const phoneNumber = cleanId.replace('@c.us', '').trim();
-			// Pastikan hanya nomor, tanpa karakter tambahan
-			if (!/^\d+$/.test(phoneNumber)) {
-				// Jika bukan nomor murni, skip
-				return null;
-			}
+			const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '').trim();
 			return `@${phoneNumber}`;
 		})
-		.filter((text) => text !== null)
 		.join(' ');
+
+	// Hapus semua "@lid" dari text sebelum dikirim
+	// "@lid" muncul karena format mention WhatsApp, tapi kita hapus sebelum kirim
+	mentionText = mentionText.replace(/@lid/gi, '').trim();
+	// Hapus spasi ganda yang mungkin muncul setelah menghapus @lid
+	mentionText = mentionText.replace(/\s+/g, ' ');
 
 	const response = await fetch(`${baseUrl}/api/sendText`, {
 		method: 'POST',
