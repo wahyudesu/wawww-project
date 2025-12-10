@@ -35,38 +35,11 @@ export async function mentionAll(baseUrl: string, session: string, chatId: strin
 		return phoneNumber !== '6285655268926' && phoneNumber !== '6282147200531' && phoneNumber !== '6281230701259' && phoneNumber !== '628885553273' && phoneNumber !== '6281326966110';
 	});
 
-	// Normalize participant IDs - pastikan format konsisten (@c.us) dan bersihkan karakter tidak valid
-	const normalizedParticipants = participants
-		.map((id: string) => {
-			// Pastikan format ID konsisten: nomor@c.us
-			let normalizedId = id.trim();
-			// Hapus karakter tidak valid
-			normalizedId = normalizedId.replace(/[^\d@a-z._]/gi, '');
-			
-			if (!normalizedId.includes('@')) {
-				normalizedId = normalizedId + '@c.us';
-			} else if (normalizedId.includes('@s.whatsapp.net')) {
-				normalizedId = normalizedId.replace('@s.whatsapp.net', '@c.us');
-			} else if (!normalizedId.endsWith('@c.us')) {
-				normalizedId = normalizedId.replace(/@.*$/, '@c.us');
-			}
-			return normalizedId;
-		})
-		.filter((id: string) => {
-			// Pastikan ID valid (harus ada nomor sebelum @c.us)
-			const phoneNumber = id.replace('@c.us', '').trim();
-			return phoneNumber.length > 0 && /^\d+$/.test(phoneNumber);
-		});
-
-	// Format text untuk mention - gunakan format @nomor seperti di welcome message
-	// Pastikan tidak ada karakter tambahan yang menyebabkan "@lid"
-	const mentionText = normalizedParticipants
-		.map((id: string) => {
-			const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '').trim();
-			// Pastikan hanya nomor, tanpa karakter tambahan
-			return `@${phoneNumber}`;
-		})
-		.join(' ');
+	// Buat mention text dengan format @[nomor] untuk setiap peserta
+	const mentionText = participants.map((id: string) => {
+		const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '');
+		return `@${phoneNumber}`;
+	}).join(' ');
 
 	const response = await fetch(`${baseUrl}/api/sendText`, {
 		method: 'POST',
@@ -81,7 +54,7 @@ export async function mentionAll(baseUrl: string, session: string, chatId: strin
 			reply_to: null,
 			text: mentionText,
 			session: session,
-			mentions: normalizedParticipants,
+			mentions: participants,
 		}),
 	});
 	const result = await response.json();
