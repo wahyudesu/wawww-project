@@ -112,7 +112,7 @@ export async function isAdmin(
 		console.log('Checking admin status for userId:', userId);
 		console.log('Participants list:', JSON.stringify(participantsJson, null, 2));
 
-		// Find the user and check if they are admin
+		// Find user and check if they are admin
 		const user = participantsJson.find((p: any) => {
 			const phoneId = p.jid || p.id;
 			const formattedId = phoneId.replace('@s.whatsapp.net', '@c.us');
@@ -178,7 +178,7 @@ export async function isAdmin(
 			(user.level && String(user.level).toLowerCase().includes('admin')) ||
 			(user.level && String(user.level).toLowerCase().includes('moderator')) ||
 			(user.level && String(user.level).toLowerCase().includes('owner')) ||
-			// Check ALL string values in the user object
+			// Check ALL string values in user object
 			containsAdminInString;
 
 		console.log('User role fields:', {
@@ -225,225 +225,208 @@ export async function isAdmin(
 	}
 }
 
-// Function to kick member (admin only)
+// Function to kick member (admin only) - simplified version
 export async function kickMember(baseUrl: string, session: string, chatId: string, participantId: string, apiKey: string): Promise<any> {
 	console.log(`Attempting to kick member ${participantId} from group ${chatId}`);
 
-	// Try different API endpoints for kicking
-	const endpoints = [
-		`${baseUrl}/api/${session}/groups/${chatId}/participants/${participantId}`,
-		`${baseUrl}/api/${session}/groups/${chatId}/participants/remove`,
-		`${baseUrl}/api/${session}/removeParticipant`,
-	];
+	// Try the most common endpoint patterns
+	const endpoint1 = `${baseUrl}/api/${session}/groups/${chatId}/participants/${participantId}`;
+	const endpoint2 = `${baseUrl}/api/${session}/groups/${chatId}/participants/remove`;
 
-	let lastError: Error | null = null;
+	// Try DELETE method first
+	try {
+		console.log(`Trying DELETE endpoint: ${endpoint1}`);
+		const response = await fetch(endpoint1, {
+			method: 'DELETE',
+			headers: {
+				accept: '*/*',
+				'X-Api-Key': apiKey,
+			},
+		});
 
-	for (const endpoint of endpoints) {
-		try {
-			console.log(`Trying endpoint: ${endpoint}`);
+		if (response.ok) {
+			const result = await response.json();
+			console.log('DELETE success:', result);
+			return result;
+		} else {
+			console.log('DELETE failed, trying POST method');
+		}
+	} catch (error) {
+		console.log('DELETE error, trying POST method:', error);
+	}
 
-			let bodyData;
-			let headersData: Record<string, string> = {
+	// Try POST method with body
+	try {
+		console.log(`Trying POST endpoint: ${endpoint2}`);
+		const response = await fetch(endpoint2, {
+			method: 'POST',
+			headers: {
 				accept: '*/*',
 				'Content-Type': 'application/json',
 				'X-Api-Key': apiKey,
-			};
+			},
+			body: JSON.stringify({
+				groupId: chatId,
+				participantChatId: participantId,
+			}),
+		});
 
-			if (endpoint.includes('/remove')) {
-				bodyData = {
-					groupId: chatId,
-					participantChatId: participantId,
-				};
-			} else {
-				// DELETE method
-				delete headersData['Content-Type'];
-			}
+		const result = await response.json();
+		console.log('POST response:', result);
 
-			const response = await fetch(endpoint, {
-				method: endpoint.includes('/remove') ? 'POST' : 'DELETE',
-				headers: headersData,
-				body: endpoint.includes('/remove') ? JSON.stringify(bodyData) : undefined,
-			});
-
-			const result = await response.json();
-			console.log(`Response from ${endpoint}:`, result);
-
-			if (response.ok || (result && ((result as any).success || (result as any).addParticipant !== false))) {
-				return result;
-			}
-
-			lastError = new Error(`Failed with endpoint ${endpoint}: ${JSON.stringify(result)}`);
-		} catch (error) {
-			console.error(`Error with endpoint ${endpoint}:`, error);
-			lastError = error as Error;
+		if (response.ok || (result && ((result as any).success || (result as any).removed || (result as any).kicked))) {
+			return result;
+		} else {
+			throw new Error(`Both DELETE and POST methods failed. Last response: ${JSON.stringify(result)}`);
 		}
+	} catch (error) {
+		console.error('All kick methods failed:', error);
+		throw error;
 	}
-
-	throw lastError || new Error('All kick member endpoints failed');
 }
 
-// Function to add member (admin only)
+// Function to add member (admin only) - simplified version
 export async function addMember(baseUrl: string, session: string, chatId: string, participantIds: string[], apiKey: string): Promise<any> {
 	console.log(`Attempting to add members ${JSON.stringify(participantIds)} to group ${chatId}`);
 
-	// Try different API endpoints for adding members
-	const endpoints = [
-		`${baseUrl}/api/${session}/groups/${chatId}/participants/add`,
-		`${baseUrl}/api/${session}/groups/${chatId}/participants`,
-		`${baseUrl}/api/${session}/addParticipant`,
-	];
+	const endpoint1 = `${baseUrl}/api/${session}/groups/${chatId}/participants/add`;
+	const endpoint2 = `${baseUrl}/api/${session}/addParticipant`;
 
-	let lastError: Error | null = null;
-
-	for (const endpoint of endpoints) {
-		try {
-			console.log(`Trying endpoint: ${endpoint}`);
-
-			let bodyData;
-			const headersData: Record<string, string> = {
+	// Try first endpoint
+	try {
+		console.log(`Trying endpoint: ${endpoint1}`);
+		const response = await fetch(endpoint1, {
+			method: 'POST',
+			headers: {
 				accept: '*/*',
 				'Content-Type': 'application/json',
 				'X-Api-Key': apiKey,
-			};
+			},
+			body: JSON.stringify({
+				participants: participantIds.map((id) => id.replace('@c.us', '')),
+			}),
+		});
 
-			if (endpoint.includes('/add') || endpoint.includes('/addParticipant')) {
-				if (endpoint.includes('/addParticipant')) {
-					bodyData = {
-						groupId: chatId,
-						participantChatId: participantIds[0], // Some APIs only support one at a time
-					};
-				} else {
-					bodyData = {
-						participants: participantIds.map((id) => id.replace('@c.us', '')), // Remove @c.us for some APIs
-					};
-				}
-			} else {
-				bodyData = {
-					participants: participantIds,
-				};
-			}
+		const result = await response.json();
+		console.log('Response from endpoint1:', result);
 
-			const response = await fetch(endpoint, {
-				method: 'POST',
-				headers: headersData,
-				body: JSON.stringify(bodyData),
-			});
-
-			const result = await response.json();
-			console.log(`Response from ${endpoint}:`, result);
-
-			if (response.ok || (result && ((result as any).success || (result as any).addParticipant !== false))) {
-				return result;
-			}
-
-			lastError = new Error(`Failed with endpoint ${endpoint}: ${JSON.stringify(result)}`);
-		} catch (error) {
-			console.error(`Error with endpoint ${endpoint}:`, error);
-			lastError = error as Error;
+		if (response.ok || (result && ((result as any).success || (result as any).added || (result as any).addParticipant !== false))) {
+			return result;
 		}
+	} catch (error) {
+		console.log('Endpoint1 failed:', error);
 	}
 
-	throw lastError || new Error('All add member endpoints failed');
+	// Try second endpoint
+	try {
+		console.log(`Trying endpoint: ${endpoint2}`);
+		const response = await fetch(endpoint2, {
+			method: 'POST',
+			headers: {
+				accept: '*/*',
+				'Content-Type': 'application/json',
+				'X-Api-Key': apiKey,
+			},
+			body: JSON.stringify({
+				groupId: chatId,
+				participantChatId: participantIds[0], // Some APIs only support one at a time
+			}),
+		});
+
+		const result = await response.json();
+		console.log('Response from endpoint2:', result);
+
+		if (response.ok || (result && ((result as any).success || (result as any).added || (result as any).addParticipant !== false))) {
+			return result;
+		} else {
+			throw new Error(`All add member endpoints failed. Last response: ${JSON.stringify(result)}`);
+		}
+	} catch (error) {
+		console.error('All add methods failed:', error);
+		throw error;
+	}
 }
 
-// Function to close group (admin only)
+// Function to close group (admin only) - based on correct documentation
 export async function closeGroup(baseUrl: string, session: string, chatId: string, apiKey: string): Promise<any> {
-	console.log(`Attempting to close group ${chatId}`);
+	console.log(`Attempting to close group ${chatId} - only admins can send messages`);
 
-	// Try different API endpoints for group settings
-	const endpoints = [
-		`${baseUrl}/api/${session}/groups/${chatId}/settings`,
-		`${baseUrl}/api/${session}/groups/${chatId}`,
-		`${baseUrl}/api/${session}/groupSettings`,
-	];
-
-	const settingsPayload = {
-		announce: true,
-		sendMessages: false,
-		restrict: true,
-		locked: true,
+	const endpoint = `${baseUrl}/api/${session}/groups/${chatId}/settings/security/messages-admin-only`;
+	const payload = {
+		adminsOnly: true,
 	};
 
-	let lastError: Error | null = null;
+	try {
+		console.log(`Using endpoint: ${endpoint}`);
+		console.log(`Payload:`, payload);
 
-	for (const endpoint of endpoints) {
-		try {
-			console.log(`Trying endpoint: ${endpoint}`);
+		const response = await fetch(endpoint, {
+			method: 'PUT',
+			headers: {
+				accept: '*/*',
+				'Content-Type': 'application/json',
+				'X-Api-Key': apiKey,
+			},
+			body: JSON.stringify(payload),
+		});
 
-			const response = await fetch(endpoint, {
-				method: 'POST',
-				headers: {
-					accept: '*/*',
-					'Content-Type': 'application/json',
-					'X-Api-Key': apiKey,
-				},
-				body: JSON.stringify(settingsPayload),
-			});
+		const result = await response.json();
+		console.log(`Response from close group:`, result);
 
-			const result = await response.json();
-			console.log(`Response from ${endpoint}:`, result);
-
-			if (response.ok || (result && (result as any).success)) {
-				return result;
-			}
-
-			lastError = new Error(`Failed with endpoint ${endpoint}: ${JSON.stringify(result)}`);
-		} catch (error) {
-			console.error(`Error with endpoint ${endpoint}:`, error);
-			lastError = error as Error;
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${JSON.stringify(result)}`);
 		}
-	}
 
-	throw lastError || new Error('All close group endpoints failed');
+		// Check if setting was properly updated
+		if (result === true || (result as any).adminsOnly === true) {
+			return { success: true, adminsOnly: true };
+		} else {
+			throw new Error('Failed to update group settings. User may not have necessary permissions.');
+		}
+	} catch (error) {
+		console.error('Error closing group:', error);
+		throw error;
+	}
 }
 
-// Function to open group (admin only)
+// Function to open group (admin only) - based on correct documentation
 export async function openGroup(baseUrl: string, session: string, chatId: string, apiKey: string): Promise<any> {
-	console.log(`Attempting to open group ${chatId}`);
+	console.log(`Attempting to open group ${chatId} - all members can send messages`);
 
-	// Try different API endpoints for group settings
-	const endpoints = [
-		`${baseUrl}/api/${session}/groups/${chatId}/settings`,
-		`${baseUrl}/api/${session}/groups/${chatId}`,
-		`${baseUrl}/api/${session}/groupSettings`,
-	];
-
-	const settingsPayload = {
-		announce: false,
-		sendMessages: true,
-		restrict: false,
-		locked: false,
+	const endpoint = `${baseUrl}/api/${session}/groups/${chatId}/settings/security/messages-admin-only`;
+	const payload = {
+		adminsOnly: false,
 	};
 
-	let lastError: Error | null = null;
+	try {
+		console.log(`Using endpoint: ${endpoint}`);
+		console.log(`Payload:`, payload);
 
-	for (const endpoint of endpoints) {
-		try {
-			console.log(`Trying endpoint: ${endpoint}`);
+		const response = await fetch(endpoint, {
+			method: 'PUT',
+			headers: {
+				accept: '*/*',
+				'Content-Type': 'application/json',
+				'X-Api-Key': apiKey,
+			},
+			body: JSON.stringify(payload),
+		});
 
-			const response = await fetch(endpoint, {
-				method: 'POST',
-				headers: {
-					accept: '*/*',
-					'Content-Type': 'application/json',
-					'X-Api-Key': apiKey,
-				},
-				body: JSON.stringify(settingsPayload),
-			});
+		const result = await response.json();
+		console.log(`Response from open group:`, result);
 
-			const result = await response.json();
-			console.log(`Response from ${endpoint}:`, result);
-
-			if (response.ok || (result && (result as any).success)) {
-				return result;
-			}
-
-			lastError = new Error(`Failed with endpoint ${endpoint}: ${JSON.stringify(result)}`);
-		} catch (error) {
-			console.error(`Error with endpoint ${endpoint}:`, error);
-			lastError = error as Error;
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${JSON.stringify(result)}`);
 		}
-	}
 
-	throw lastError || new Error('All open group endpoints failed');
+		// Check if setting was properly updated
+		if (result === true || (result as any).adminsOnly === false) {
+			return { success: true, adminsOnly: false };
+		} else {
+			throw new Error('Failed to update group settings. User may not have necessary permissions.');
+		}
+	} catch (error) {
+		console.error('Error opening group:', error);
+		throw error;
+	}
 }
