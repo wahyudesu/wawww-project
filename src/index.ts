@@ -8,7 +8,7 @@ import {
 	// handleHelp,
 	checkToxic,
 	getToxicWarning,
-	handleDevInfo,
+	handleDevInfoLegacy,
 	generateMathQuestions,
 	formatMathQuiz,
 	checkMathAnswers,
@@ -151,7 +151,7 @@ export default {
 			if (text?.startsWith('/ai') && chatId && reply_to) {
 				try {
 					// Ambil semua data assignments dari D1 dan jadikan context
-					const db = env['db-tugas'];
+					const db = env.DB;
 					// const manager = new D1AssignmentManager(db);
 					// const assignments = await manager.getAllAssignments();
 					// const contextString = assignments
@@ -465,7 +465,7 @@ export default {
 			if (text?.startsWith('/kick') && chatId && reply_to && participant) {
 				try {
 					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env['db-tugas']);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
 					if (!adminCheck) {
 						await fetch(baseUrl + '/api/sendText', {
 							method: 'POST',
@@ -559,7 +559,7 @@ export default {
 			if (text?.startsWith('/add') && chatId && reply_to && participant) {
 				try {
 					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env['db-tugas']);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
 					if (!adminCheck) {
 						await fetch(baseUrl + '/api/sendText', {
 							method: 'POST',
@@ -658,7 +658,7 @@ export default {
 			if (text === '/closegroup' && chatId && reply_to && participant) {
 				try {
 					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env['db-tugas']);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
 					if (!adminCheck) {
 						await fetch(baseUrl + '/api/sendText', {
 							method: 'POST',
@@ -727,7 +727,7 @@ export default {
 			if (text === '/opengroup' && chatId && reply_to && participant) {
 				try {
 					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env['db-tugas']);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
 					if (!adminCheck) {
 						await fetch(baseUrl + '/api/sendText', {
 							method: 'POST',
@@ -818,7 +818,7 @@ export default {
 						return formattedId === normalizedUserId || p.id === normalizedUserId || phoneId === normalizedUserId;
 					});
 
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env['db-tugas']);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
 
 					// Create detailed debug info
 					let debugInfo = `🔍 *Debug Admin Status*\n\n`;
@@ -884,7 +884,7 @@ export default {
 
 			if (text === '/dev' && chatId && reply_to) {
 				try {
-					const result = await handleDevInfo(baseUrl, session, APIkey, chatId, reply_to);
+					const result = await handleDevInfoLegacy(baseUrl, session, APIkey, chatId, reply_to);
 					return new Response(JSON.stringify(result), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
 				} catch (e: any) {
 					return new Response(JSON.stringify({ error: e.message }), {

@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Documentation Structure
+
+This project uses a hierarchical documentation system:
+
+- **AGENTS.md** (this file) - Primary guidance for Claude Code agents
+- **_docs/project-features.md** - Detailed feature matrix and implementation status
+- **_docs/project-sctructure.md** - Complete directory structure and module organization
+
+When working with this codebase:
+1. Start here for architectural context and development patterns
+2. Refer to `project-features.md` for feature specifications and implementation status
+3. Consult `project-sctructure.md` for file organization and module relationships
+
 ## Project Overview
 
 This is a WhatsApp group chatbot built as a Cloudflare Worker. It integrates with the Waha (WhatsApp HTTP API) service to provide automated moderation, games, Islamic features, and AI-powered assistance to WhatsApp groups.
@@ -135,3 +148,51 @@ await fetch(baseUrl + '/api/sendText', {
 - Database schema in `src/db/schema.ts`
 - Migrations generated to `drizzle/` directory
 - Use `.dev.vars` for local environment variables (not in git)
+
+## Related Documentation
+
+### Feature Specifications (_docs/project-features.md)
+
+The feature matrix document provides a comprehensive overview of all bot capabilities organized by category:
+
+**Implemented Features:**
+- Group Management: Tag All, Welcome Messages, Group Join Handling
+- Content Moderation: Toxic Word Detection
+- Educational Tools: AI Assistant (with database context)
+- Utility Commands: Greetings, Pantun, Daily Prayers, Bitcoin Price, Developer Info, Help
+- Admin Tools: Kick, Add Members, Close/Open Groups
+
+**Planned Features:**
+- Social Media Downloaders (Instagram, TikTok, YouTube, Facebook)
+- Analytics: Chat Activity Tracking
+- Gamification: Quiz & Trivia Games
+- Database: Owner Data Collection
+- Educational: Math Quiz (currently has errors)
+
+Each feature includes:
+- Status indicator (✅ Implemented / ⏳ Planned)
+- Access level (Admin, Member, or permanent)
+- Brief description of functionality
+
+### Project Structure (_docs/project-sctructure.md)
+
+The structure document contains:
+- Complete directory tree visualization
+- Detailed module-by-module breakdown:
+  - `/src/config/` - Configuration and environment management
+  - `/src/db/` - Database layer with Drizzle ORM
+  - `/src/functions/` - Core bot functionality
+  - `/src/handler/` - Event handlers for WhatsApp events
+  - `/src/data/` - Static data files
+- Entry point explanation (`src/index.ts`)
+- Configuration file details (package.json, wrangler.jsonc, tsconfig.json)
+- Architectural patterns:
+  - Service layer organization
+  - Data flow diagram
+  - Separation of concerns
+
+Reference this document when:
+- Adding new features (know where to place code)
+- Understanding file organization
+- Tracing code execution flow
+- Locating specific functionality

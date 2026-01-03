@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "DeepGraph TypeScript MCP": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-code-graph@latest",
+        "microsoft/TypeScript"
+      ]
+    },
+    "cloudflare": {
+        "command": "npx",
+        "args": [
+          "mcp-remote",
+          "https://docs.mcp.cloudflare.com/mcp"]
+    }
+  }
+}

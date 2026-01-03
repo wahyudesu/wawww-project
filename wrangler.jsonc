@@ -11,14 +11,12 @@
 	"observability": {
 		"enabled": true,
 	},
-	"hyperdrive": [
+	"d1_databases": [
 		{
-			"binding": "HYPERDRIVE",
-			"id": "2712442e235649dbaf2eeadccf348c18",
-			// Untuk development lokal, gunakan Postgres lokal
-			// Bisa di-override dengan environment variable:
-			// WRANGLER_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE=postgresql://user:password@localhost:5432/database_name
-		},
+			"binding": "DB",
+			"database_name": "wawww-project",
+			"database_id": "6dbee5f6-d1ce-4348-875e-cd1519d7e239"
+		}
 	],
 	"secrets_store_secrets": [
 		{

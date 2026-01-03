@@ -16,8 +16,11 @@
 - [x] pindah ke bun
 - [x] terapin agents.md
 - [x] rapihin agents.md
+- [ ] sederhanakan skema database
+- [ ] atur settings di skema database
 - [ ] implementasi fitur quiz
 - [ ] implementasi banyak api yang bisa dipake
+- [ ] tambahin fitur pengingat sholat
 - [x] tambahin fitur bitcoin
 - [x] tambahin fitur soal math
 - [ ] tambahin fitur soal math difficult easy, medium, hard
@@ -30,26 +33,21 @@
 - [ ] fitur note yang bisa dipakai X
 - [ ] fitur note dihapus setelah X
 
+# prompt update besar besaran cuy (anjir claude code ini kebanyakan types wak)
 
-others
+1. AGENTS.md dan docs terlebih dahulu
+1. DB terlebih dahulu
+1. masih soal lib, fungsi fungsi pentinngnya apa dulu
 
-# Feature
+ini bener bener bakal makan seharian wok
+
+nanti baru fokus buat ngerjain magna partner
 
 
-## Task specific phase 1
-
+- ini aja dari fondasi prompt guide awal harus clear duluan bro
 - buatkan saya fitur untuk download tiktok/yt/fb
 - buatkan saya fitur untuk mendeteksi bahwa postingannya itu memuat link
 - fitur tag all hanya bisa dilakukan oleh admin, kecuali bisa 
-- fitur admin bisa kik, add, tutup grup,
+- sesuaikan kembali fitur admin bisa kik, add, tutup grup
 - ngambil data owner pada tiap grup buat dimasukin ke database
-
-Note: sesuaikan database bila diperlukan
-
-## Task specific phase 2
-
-- buatkan saya fitur utk mentrack yg paling banyak chat
-
-
-## Task specific phase 3
-- gamify quiz dan tebak-tebakan
+- buat function untuk ngambil data owner pada tiap grup untuk dikirimin pesan tertentu, pesannya bakal panjang jadi formatnya markdown

@@ -1,55 +1,68 @@
+/**
+ * Handle group join events
+ * Uses D1 database and current schema
+ */
 
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { group, participant_group } from '../db/schema';
+import * as queries from '../db/queries';
 
-// env: { HYPERDRIVE: { connectionString: string } }
 export async function handleJoinGroupEvent(event: any, env: any) {
-  // Robustly extract group info from event
-  const groupData = event?.payload?.group;
-  if (!groupData) {
-    console.error('No group data in event:', event);
-    return;
-  }
-  const id = groupData.id;
-  const subject = groupData.subject;
-  const participants = Array.isArray(groupData.participants) ? groupData.participants : [];
-  if (!id || !subject || participants.length === 0) {
-    console.error('Missing id, subject, or participants:', { id, subject, participants });
-    return;
-  }
+	// Robustly extract group info from event
+	const groupData = event?.payload?.group;
+	if (!groupData) {
+		console.error('No group data in event:', event);
+		return;
+	}
+	const id = groupData.id;
+	const subject = groupData.subject;
+	const participants = Array.isArray(groupData.participants) ? groupData.participants : [];
+	if (!id || !subject || participants.length === 0) {
+		console.error('Missing id, subject, or participants:', { id, subject, participants });
+		return;
+	}
 
-  console.log(`Handling join group event for group ID: ${id}, subject: ${subject}, participants count: ${participants.length}`);
+	console.log(`Handling join group event for group ID: ${id}, subject: ${subject}, participants count: ${participants.length}`);
 
-  const sql = postgres(env.HYPERDRIVE.connectionString, { max: 5, fetch_types: false });
-  const db = drizzle(sql);
-  try {
-    // Insert group (id, name)
-    try {
-      await db.insert(group).values({
-        id,
-        name: subject,
-      }).onConflictDoNothing();
-    } catch (err) {
-      console.error('Failed to insert group:', err);
-    }
+	const db = queries.getDb(env);
+	try {
+		// Extract admins and members from participants
+		const admins: string[] = [];
+		const members: string[] = [];
 
-    // Insert participants
-    for (const p of participants) {
-      // Be robust: WhatsApp id bisa @c.us atau @s.whatsapp.net, role bisa null
-      if (!p?.id) continue;
-      const role = p.role || (typeof p.admin === 'string' ? p.admin : 'participant');
-      try {
-        await db.insert(participant_group).values({
-          id: p.id,
-          role: role,
-          group_id: id,
-        }).onConflictDoNothing();
-      } catch (err) {
-        console.error('Failed to insert participant:', p, err);
-      }
-    }
-  } finally {
-    await sql.end();
-  }
+		for (const p of participants) {
+			if (!p?.id) continue;
+
+			// Convert to phone number format
+			const phone = p.id.replace('@s.whatsapp.net', '').replace('@c.us', '');
+
+			// Check role - admin roles include: admin, superadmin, owner
+			const role = p.role || (typeof p.admin === 'string' ? p.admin : 'participant');
+			const isAdminRole =
+				role === 'admin' ||
+				role === 'superadmin' ||
+				role === 'Admin' ||
+				role === 'SuperAdmin' ||
+				p.admin === true;
+
+			if (isAdminRole) {
+				admins.push(phone);
+			}
+			members.push(phone);
+		}
+
+		// Find owner (first admin usually)
+		const ownerPhone = admins.length > 0 ? admins[0] : members[0];
+
+		// Upsert group with participants
+		await queries.upsertGroup(db, {
+			id,
+			name: subject,
+			ownerPhone,
+			admin: admins,
+			member: members,
+		});
+
+		console.log(`Successfully synced group ${id} with ${admins.length} admins and ${members.length} members`);
+	} catch (err) {
+		console.error('Failed to handle join group event:', err);
+	}
 }
