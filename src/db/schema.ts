@@ -1,57 +1,40 @@
 // src/db/schema.ts
-import { pgTable, varchar, text, date, smallint, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, text, date, smallint, uuid, jsonb, timestamp } from 'drizzle-orm/pg-core';
+
+export const group_whatsapp = pgTable('group_whatsapp', {id: uuid().primaryKey(),
+	name: varchar({ length: 100 }).notNull(),
+
+	ownerId: uuid().notNull().references(() => user.id),
+	admin: varchar({ length: 15 }).array(),          // banyak nomor
+	member: varchar({ length: 15 }).array(),         // banyak nomor
+
+	createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+	setings: jsonb(),
+});
 
 // USER
 export const user = pgTable('user', {
-	   id: uuid().primaryKey(),
-	   status: varchar({ length: 50 }).references(() => status.id),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
-	   name: varchar({ length: 100 }).notNull(),
-	   no: varchar({ length: 15 }).notNull(),
-	   email: varchar({ length: 100 }).unique(),
-	   created_at: date().defaultNow(),
+	id: uuid().primaryKey(),
+
+	name: varchar({ length: 100 }).notNull(),
+	no: varchar({ length: 20 }).notNull(),
+	email: varchar({ length: 100 }).unique(),
+
+	note: text(), // note milik grup
+	
+	createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+	updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdateFn(() => new Date()),
 });
 
 // STATUS
-export const status = pgTable('status', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   label: varchar({ length: 50 }).default('basic'), //basic or premium
-	   start_date: date().defaultNow(),
-	   end_date: date() 
-});
+export const subscription = pgTable('subscription', {
+	id: uuid().primaryKey(),
 
-// GROUP
-export const group = pgTable('group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   name: varchar({ length: 100 }).notNull(),
-	   type: varchar({ length: 50 }),
-});
+	userId: uuid().notNull().references(() => user.id),
 
-// PARTICIPANT_GROUP
-export const participant_group = pgTable('participant_group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   no: varchar({ length: 15 }),
-	   role: varchar({ length: 15 }),
-	   sum_message: smallint().default(0),
-	   country: varchar({ length: 50 }),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
-	   month: date(),
-});
+	plan: varchar({ length: 50 }).notNull(),      // free, pro, dll
+	status: varchar({ length: 20 }).notNull(),    // active, expired
+	expiresAt: timestamp('expires_at', { withTimezone: true }),
 
-// TUGAS_GROUP
-export const tugas_group = pgTable('tugas_group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   name: varchar({ length: 100 }).notNull(),
-	   description: text(),
-	   due_date: date(),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
-	   created_at: date(),
-});
-
-// NOTE_GROUP
-export const note_group = pgTable('note_group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   note: text(),
-	   updated_at: date(),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
+	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
