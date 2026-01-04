@@ -4,21 +4,29 @@
 
 import type { WahaChatClient } from '../../functions/lib/chatting';
 import type { CommandContext, CommandHandler } from '../index';
-import { getGroupParticipants, mentionAllWithClient } from '../../functions';
+import { GroupParticipantService } from '../../services';
 
 const handler: CommandHandler = async (client: WahaChatClient, context: CommandContext) => {
-	const { chatId, env } = context;
+	const { chatId } = context;
+	const { baseUrl, session, apiKey } = client['config'].getConfig();
 
-	const participants = await getGroupParticipants(
-		client['config'].getBaseUrl(),
-		client['config'].getSession(),
-		chatId,
-		client['config'].getApiKey(),
-	);
+	const participantService = new GroupParticipantService(baseUrl, session, apiKey);
 
-	const result = await mentionAllWithClient(client, chatId, participants);
+	// Get all participants
+	const participants = await participantService.getParticipants(chatId);
 
-	return new Response(JSON.stringify({ status: 'mention sent', result }), { status: 200 });
+	// Filter participants
+	const filteredParticipants = participantService.filterParticipants(participants);
+
+	// Create mention text
+	const mentionText = participantService.createMentionText(filteredParticipants);
+
+	// Send message
+	await client.sendToGroup(chatId, mentionText, {
+		mentions: filteredParticipants,
+	});
+
+	return new Response(JSON.stringify({ status: 'mention sent' }), { status: 200 });
 };
 
 export default handler;

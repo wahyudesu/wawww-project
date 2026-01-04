@@ -4,13 +4,12 @@
 
 import type { WahaChatClient } from '../../functions/lib/chatting';
 import type { CommandContext, CommandHandler } from '../index';
-import { handleDevInfoLegacy } from '../../functions';
+import { handleDevInfo } from '../../functions/greetings';
 
 const handler: CommandHandler = async (client: WahaChatClient, context: CommandContext) => {
 	const { chatId, replyTo } = context;
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
 
-	await handleDevInfoLegacy(baseUrl, session, apiKey, chatId, replyTo);
+	await handleDevInfo(client, chatId, replyTo);
 
 	return new Response(JSON.stringify({ status: 'dev info sent' }), { status: 200 });
 };
