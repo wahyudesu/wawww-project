@@ -20,7 +20,7 @@
 - [x] balik fokus ke skema dan db
 - [x] sederhanakan skema database
 - [x] atur settings di skema database
-- [ ] lakuin testing dulu ygy
+- [x] lakuin testing dulu ygy
 - [ ] implementasi fitur quiz
 - [ ] implementasi banyak api yang bisa dipake
 - [ ] tambahin fitur pengingat sholat
@@ -42,7 +42,19 @@
 1. DB terlebih dahulu
 1. masih soal lib, fungsi fungsi pentinngnya apa dulu
 
-ini bener bener bakal makan seharian wok
+dari lib ini fitur chatting udah bekerja dengan baik, selanjutnya adalah membuat fungsi fungsi yang nantinya bakal 
+
+perbaiki fitur bitcoin
+tebak tebakan matematika pake kirim list interaktif
+kick dan add member dgn parameter number tergantung yang nyuruh siapa, kalau admin boleh
+doa harian yang mengirim informasi doa secara acak dari data/doaharian.jsosn
+/dev menampilkan developer info yang telah didefinisikan
+- /opengroup membuka grup supaya semua orang bisa mengirim pesan
+- /menutup grup supaya hanya admin yang bisa mengirim pesan
+- /taglall mention all group, tapi kkni semua orang dan admin dan membner untuk menggunnakan fitur tersebut 
+- /pantun random pantun indonesia
+- /mendeteksi jika itu link termasuk iklan apa nggak
+- /kuis kuis nay adaa beberap ajenis, ada kuis t ebak tebakan ada kuis dimana orangvny diberi hadiah berupa permen dan dinosasuru sselanjuy na disini say ahany amkenulis fitur fitur saya yang digunakan oleh orang lain dan saya juga saay itu diberikan oleh roang lain kebahagiaan untuk menemukan apa yang b isa say ajad
 
 nanti baru fokus buat ngerjain magna partner
 

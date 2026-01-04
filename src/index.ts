@@ -2,13 +2,13 @@ import { getWorkerEnv, PersonalIds } from './config/env';
 import {
 	mentionAll,
 	basicCommands,
-	// handleTambahTugas,
-	// handleLihatTugas,
-	// handleHapusTugas,
-	// handleHelp,
 	checkToxic,
 	getToxicWarning,
 	handleDevInfoLegacy,
+	handleBitcoinCommandLegacy,
+	handleMathQuizCommandLegacy,
+	handleKickCommandLegacy,
+	handleAddCommandLegacy,
 	generateMathQuestions,
 	formatMathQuiz,
 	checkMathAnswers,
@@ -330,81 +330,8 @@ export default {
 			// Command /bitcoin
 			if (text === '/bitcoin' && chatId && reply_to) {
 				try {
-					// Fetch USD price
-					const respUsd = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-					const dataUsd: { bitcoin?: { usd?: number } } = await respUsd.json();
-					const priceUsd = dataUsd?.bitcoin?.usd;
-
-					// Fetch IDR price
-					const respIdr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=idr');
-					const dataIdr: { bitcoin?: { idr?: number } } = await respIdr.json();
-					const priceIdr = dataIdr?.bitcoin?.idr;
-
-					let msg;
-					if (typeof priceUsd === 'number' && typeof priceIdr === 'number') {
-						msg = `💰 Harga Bitcoin saat ini:\nIDR: Rp${priceIdr.toLocaleString('id-ID')}\nUSD: $${priceUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-					} else {
-						msg = 'Gagal mengambil harga Bitcoin.';
-					}
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: msg,
-							session: session,
-						}),
-					});
-					return new Response(JSON.stringify({ status: 'bitcoin sent', priceUsd, priceIdr }), {
-						status: 200,
-						headers: { 'Content-Type': 'application/json', ...corsHeaders },
-					});
-				} catch (e: any) {
-					return new Response(JSON.stringify({ error: e.message }), {
-						status: 500,
-						headers: { 'Content-Type': 'application/json', ...corsHeaders },
-					});
-				}
-			}
-
-			if (text === '/bitcoin' && chatId && reply_to) {
-				try {
-					// Fetch USD price
-					const respUsd = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-					const dataUsd: { bitcoin?: { usd?: number } } = await respUsd.json();
-					const priceUsd = dataUsd?.bitcoin?.usd;
-
-					// Fetch IDR price
-					const respIdr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=idr');
-					const dataIdr: { bitcoin?: { idr?: number } } = await respIdr.json();
-					const priceIdr = dataIdr?.bitcoin?.idr;
-
-					let msg;
-					if (typeof priceUsd === 'number' && typeof priceIdr === 'number') {
-						msg = `💰 Harga Bitcoin saat ini:\nIDR: Rp${priceIdr.toLocaleString('id-ID')}\nUSD: $${priceUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-					} else {
-						msg = 'Gagal mengambil harga Bitcoin.';
-					}
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: msg,
-							session: session,
-						}),
-					});
-					return new Response(JSON.stringify({ status: 'bitcoin sent', priceUsd, priceIdr }), {
+					await handleBitcoinCommandLegacy(baseUrl, session, APIkey, chatId, reply_to);
+					return new Response(JSON.stringify({ status: 'bitcoin sent' }), {
 						status: 200,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});
@@ -419,28 +346,8 @@ export default {
 			// Command /math
 			if (text === '/math' && chatId && reply_to) {
 				try {
-					const questions = generateMathQuestions(3);
-					const mathQuiz = formatMathQuiz(questions);
-
-					// Store questions in a simple in-memory store (ideally use database)
-					const quizKey = `${chatId}_${reply_to}_math`;
-					// You would store questions[quizKey] = questions in a database
-
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: mathQuiz,
-							session: session,
-						}),
-					});
-					return new Response(JSON.stringify({ status: 'math quiz sent', questions: questions }), {
+					await handleMathQuizCommandLegacy(baseUrl, session, APIkey, chatId, reply_to, 3);
+					return new Response(JSON.stringify({ status: 'math quiz sent' }), {
 						status: 200,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});
@@ -464,90 +371,13 @@ export default {
 			// Command /kick - Kick member (admin only)
 			if (text?.startsWith('/kick') && chatId && reply_to && participant) {
 				try {
-					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
-					if (!adminCheck) {
-						await fetch(baseUrl + '/api/sendText', {
-							method: 'POST',
-							headers: {
-								accept: 'application/json',
-								'Content-Type': 'application/json',
-								'X-Api-Key': APIkey,
-							},
-							body: JSON.stringify({
-								chatId: chatId,
-								reply_to: reply_to,
-								text: '❌ Maaf, hanya admin yang bisa menggunakan perintah ini.',
-								session: session,
-							}),
-						});
-						return new Response(JSON.stringify({ status: 'access denied' }), {
-							status: 200,
-							headers: { 'Content-Type': 'application/json', ...corsHeaders },
-						});
-					}
-
-					// Extract number from command
 					const targetNumber = text.replace('/kick', '').trim();
-					if (!targetNumber) {
-						await fetch(baseUrl + '/api/sendText', {
-							method: 'POST',
-							headers: {
-								accept: 'application/json',
-								'Content-Type': 'application/json',
-								'X-Api-Key': APIkey,
-							},
-							body: JSON.stringify({
-								chatId: chatId,
-								reply_to: reply_to,
-								text: '⚠️ Format: /kick <nomor_telepon>\nContoh: /kick 628123456789',
-								session: session,
-							}),
-						});
-						return new Response(JSON.stringify({ status: 'invalid format' }), {
-							status: 200,
-							headers: { 'Content-Type': 'application/json', ...corsHeaders },
-						});
-					}
-
-					const targetId = `${targetNumber}@c.us`;
-					const result = await kickMember(baseUrl, session, chatId, targetId, APIkey);
-
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: `✅ Berhasil mengkick @${targetNumber} dari grup`,
-							session: session,
-							mentions: [targetId],
-						}),
-					});
-
-					return new Response(JSON.stringify({ status: 'member kicked', result }), {
+					await handleKickCommandLegacy(baseUrl, session, APIkey, chatId, participant, targetNumber, reply_to);
+					return new Response(JSON.stringify({ status: 'kick command processed' }), {
 						status: 200,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});
 				} catch (e: any) {
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: `❌ Gagal mengkick member: ${e.message}`,
-							session: session,
-						}),
-					});
 					return new Response(JSON.stringify({ error: e.message }), {
 						status: 500,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -558,95 +388,17 @@ export default {
 			// Command /add - Add member (admin only)
 			if (text?.startsWith('/add') && chatId && reply_to && participant) {
 				try {
-					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
-					if (!adminCheck) {
-						await fetch(baseUrl + '/api/sendText', {
-							method: 'POST',
-							headers: {
-								accept: 'application/json',
-								'Content-Type': 'application/json',
-								'X-Api-Key': APIkey,
-							},
-							body: JSON.stringify({
-								chatId: chatId,
-								reply_to: reply_to,
-								text: '❌ Maaf, hanya admin yang bisa menggunakan perintah ini.',
-								session: session,
-							}),
-						});
-						return new Response(JSON.stringify({ status: 'access denied' }), {
-							status: 200,
-							headers: { 'Content-Type': 'application/json', ...corsHeaders },
-						});
-					}
-
-					// Extract numbers from command
 					const targetNumbers = text
 						.replace('/add', '')
 						.trim()
 						.split(/[\s,]+/)
 						.filter((n: string) => n);
-					if (targetNumbers.length === 0) {
-						await fetch(baseUrl + '/api/sendText', {
-							method: 'POST',
-							headers: {
-								accept: 'application/json',
-								'Content-Type': 'application/json',
-								'X-Api-Key': APIkey,
-							},
-							body: JSON.stringify({
-								chatId: chatId,
-								reply_to: reply_to,
-								text: '⚠️ Format: /add <nomor_telepon1,nomor_telepon2>\nContoh: /add 628123456789,628987654321',
-								session: session,
-							}),
-						});
-						return new Response(JSON.stringify({ status: 'invalid format' }), {
-							status: 200,
-							headers: { 'Content-Type': 'application/json', ...corsHeaders },
-						});
-					}
-
-					const targetIds = targetNumbers.map((num: string) => `${num}@c.us`);
-					const result = await addMember(baseUrl, session, chatId, targetIds, APIkey);
-
-					const mentionsText = targetNumbers.map((num: string) => `@${num}`).join(', ');
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: `✅ Berhasil menambahkan ${mentionsText} ke grup`,
-							session: session,
-							mentions: targetIds,
-						}),
-					});
-
-					return new Response(JSON.stringify({ status: 'members added', result }), {
+					await handleAddCommandLegacy(baseUrl, session, APIkey, chatId, participant, targetNumbers, reply_to);
+					return new Response(JSON.stringify({ status: 'add command processed' }), {
 						status: 200,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
 					});
 				} catch (e: any) {
-					await fetch(baseUrl + '/api/sendText', {
-						method: 'POST',
-						headers: {
-							accept: 'application/json',
-							'Content-Type': 'application/json',
-							'X-Api-Key': APIkey,
-						},
-						body: JSON.stringify({
-							chatId: chatId,
-							reply_to: reply_to,
-							text: `❌ Gagal menambahkan member: ${e.message}`,
-							session: session,
-						}),
-					});
 					return new Response(JSON.stringify({ error: e.message }), {
 						status: 500,
 						headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -658,7 +410,7 @@ export default {
 			if (text === '/closegroup' && chatId && reply_to && participant) {
 				try {
 					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey);
 					if (!adminCheck) {
 						await fetch(baseUrl + '/api/sendText', {
 							method: 'POST',
@@ -727,7 +479,7 @@ export default {
 			if (text === '/opengroup' && chatId && reply_to && participant) {
 				try {
 					// Check if user is admin
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey);
 					if (!adminCheck) {
 						await fetch(baseUrl + '/api/sendText', {
 							method: 'POST',
@@ -818,7 +570,7 @@ export default {
 						return formattedId === normalizedUserId || p.id === normalizedUserId || phoneId === normalizedUserId;
 					});
 
-					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey, env.DB);
+					const adminCheck = await isAdmin(baseUrl, session, chatId, participant, APIkey);
 
 					// Create detailed debug info
 					let debugInfo = `🔍 *Debug Admin Status*\n\n`;

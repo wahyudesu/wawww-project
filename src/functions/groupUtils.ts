@@ -1,9 +1,51 @@
-/**
- * Group Utilities - Integrasi Waha API dengan Database
- * Hybrid approach: Support legacy API + Database operations
- */
+// intinya ini tuh fungsi fungsi terkait grup
+// mengecek setting terlebih dahulu, lalu mention semua member, kick member, add member,
+// mengecek input masuk -> setting di db -> panggil s
 
-import * as queries from '../db/queries';
+import { WahaChatClient } from './lib/chatting';
+import { createManualWahaConfig as _createManualWahaConfig } from '../config/waha';
+
+// ==================== REFACTORED FUNCTIONS ====================
+// Using WahaChatClient from lib/chatting.ts
+
+/**
+ * Mention all group members
+ * Uses WahaChatClient for sending messages
+ */
+export async function mentionAll(
+	client: WahaChatClient,
+	chatId: string,
+	participants: string[],
+): Promise<any> {
+	// Filter out specific numbers (blacklist)
+	const filteredParticipants = participants.filter((id: string) => {
+		const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '');
+		return (
+			phoneNumber !== '6285655268926' &&
+			phoneNumber !== '6282147200531' &&
+			phoneNumber !== '6281230701259' &&
+			phoneNumber !== '628885553273' &&
+			phoneNumber !== '6281326966110'
+		);
+	});
+
+	// Create mention text
+	let mentionText = filteredParticipants
+		.map((id: string) => {
+			const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '').trim();
+			return `@${phoneNumber}`;
+		})
+		.join(' ');
+
+	// Clean up @lid artifacts
+	mentionText = mentionText.replace(/@lid/gi, '').trim();
+	mentionText = mentionText.replace(/\s+/g, ' ');
+
+	// Send message using WahaChatClient
+	return await client.sendToGroup(chatId, mentionText, {
+		mentions: filteredParticipants,
+	});
+}
 
 // ==================== LEGACY API FUNCTIONS ====================
 // These functions are kept for backward compatibility with src/index.ts
@@ -45,64 +87,24 @@ export async function getGroupParticipants(
 }
 
 /**
- * Mention all group members
- * @deprecated Use GroupService.mentionAll() for database-integrated operations
+ * Mention all group members (Legacy Wrapper)
+ * @deprecated Use mentionAll with WahaChatClient instead
  */
-export async function mentionAll(
+export async function mentionAllLegacy(
 	baseUrl: string,
 	session: string,
 	chatId: string,
 	apiKey: string,
 ): Promise<any> {
-	let participants = await getGroupParticipants(baseUrl, session, chatId, apiKey);
-
-	// Filter out specific numbers (blacklist)
-	participants = participants.filter((id: string) => {
-		const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '');
-		return (
-			phoneNumber !== '6285655268926' &&
-			phoneNumber !== '6282147200531' &&
-			phoneNumber !== '6281230701259' &&
-			phoneNumber !== '628885553273' &&
-			phoneNumber !== '6281326966110'
-		);
-	});
-
-	// Create mention text
-	let mentionText = participants
-		.map((id: string) => {
-			const phoneNumber = id.replace('@c.us', '').replace('@s.whatsapp.net', '').trim();
-			return `@${phoneNumber}`;
-		})
-		.join(' ');
-
-	// Clean up @lid artifacts
-	mentionText = mentionText.replace(/@lid/gi, '').trim();
-	mentionText = mentionText.replace(/\s+/g, ' ');
-
-	const response = await fetch(`${baseUrl}/api/sendText`, {
-		method: 'POST',
-		headers: {
-			accept: 'application/json',
-			'Content-Type': 'application/json',
-			'X-Api-Key': apiKey,
-		},
-		body: JSON.stringify({
-			chatId: chatId,
-			reply_to: null,
-			text: mentionText,
-			session: session,
-			mentions: participants,
-		}),
-	});
-
-	const result = await response.json();
-	return result;
+	const config = _createManualWahaConfig(baseUrl, apiKey, session);
+	const client = new WahaChatClient(config);
+	const participants = await getGroupParticipants(baseUrl, session, chatId, apiKey);
+	return await mentionAll(client, chatId, participants);
 }
 
 /**
  * Check if user is admin
- * Supports both Waha API check and database check
+ * Supports Waha API check
  */
 export async function isAdmin(
 	baseUrl: string,
@@ -110,7 +112,6 @@ export async function isAdmin(
 	chatId: string,
 	userId: string,
 	apiKey: string,
-	db?: any,
 ): Promise<boolean> {
 	try {
 		// Try Waha API first (real-time admin status)
@@ -124,16 +125,12 @@ export async function isAdmin(
 
 		if (!response.ok) {
 			console.error('Failed to fetch participants for admin check:', response.statusText);
-			// Fallback to database
-			if (db) return checkAdminFromDatabase(db, chatId, userId);
 			return false;
 		}
 
 		const participantsJson = await response.json();
 		if (!Array.isArray(participantsJson)) {
 			console.error('Participants response is not an array:', participantsJson);
-			// Fallback to database
-			if (db) return checkAdminFromDatabase(db, chatId, userId);
 			return false;
 		}
 
@@ -147,8 +144,6 @@ export async function isAdmin(
 
 		if (!user) {
 			console.log('User not found in participants list');
-			// Fallback to database
-			if (db) return checkAdminFromDatabase(db, chatId, userId);
 			return false;
 		}
 
@@ -156,28 +151,12 @@ export async function isAdmin(
 		const isAdminRole = checkAdminRoleFromWahaUser(user);
 
 		if (isAdminRole) {
-			// Sync to database
-			if (db) {
-				try {
-					const normalizedUserId = userId.replace('@s.whatsapp.net', '@c.us');
-					const phone = normalizedUserId.replace('@c.us', '');
-					const drizzleDb = queries.getDb(db);
-					await queries.addGroupAdmin(drizzleDb, chatId, phone);
-				} catch (err) {
-					console.error('Failed to sync admin to database:', err);
-				}
-			}
 			return true;
 		}
-
-		// Fallback: Check database
-		if (db) return checkAdminFromDatabase(db, chatId, userId);
 
 		return false;
 	} catch (error) {
 		console.error('Error checking admin status:', error);
-		// Final fallback to database
-		if (db) return checkAdminFromDatabase(db, chatId, userId);
 		return false;
 	}
 }
@@ -234,21 +213,6 @@ function checkAdminRoleFromWahaUser(user: any): boolean {
 		// Check ALL string values
 		containsAdminInString
 	);
-}
-
-/**
- * Check admin from database
- */
-async function checkAdminFromDatabase(db: any, chatId: string, userId: string): Promise<boolean> {
-	try {
-		const normalizedUserId = userId.replace('@s.whatsapp.net', '@c.us');
-		const phone = normalizedUserId.replace('@c.us', '');
-		const drizzleDb = queries.getDb(db);
-		return await queries.isGroupAdmin(drizzleDb, chatId, phone);
-	} catch (dbError) {
-		console.error('Database admin check failed:', dbError);
-		return false;
-	}
 }
 
 /**
@@ -430,4 +394,191 @@ export async function openGroup(baseUrl: string, session: string, chatId: string
 	} else {
 		throw new Error('Failed to update group settings.');
 	}
+}
+
+// ==================== ADMIN COMMAND HANDLERS ====================
+// These handlers check admin status and use WahaChatClient for messaging
+
+/**
+ * Handle /kick command with admin check
+ * @param client WahaChatClient instance
+ * @param baseUrl Waha base URL
+ * @param session Session name
+ * @param apiKey API key
+ * @param chatId Group chat ID
+ * @param requesterId User who sent the command
+ * @param targetNumber Phone number to kick
+ * @param replyToMessageId Message ID to reply to
+ */
+export async function handleKickCommand(
+	client: WahaChatClient,
+	baseUrl: string,
+	session: string,
+	apiKey: string,
+	chatId: string,
+	requesterId: string,
+	targetNumber: string,
+	replyToMessageId: string,
+): Promise<void> {
+	// Check if requester is admin
+	const isAdminUser = await isAdmin(baseUrl, session, chatId, requesterId, apiKey);
+
+	if (!isAdminUser) {
+		await client.sendText({
+			chatId,
+			text: '❌ Maaf, hanya admin yang bisa menggunakan perintah ini.',
+			reply_to: replyToMessageId,
+		});
+		return;
+	}
+
+	// Validate target number
+	if (!targetNumber) {
+		await client.sendText({
+			chatId,
+			text: '⚠️ Format: /kick <nomor_telepon>\nContoh: /kick 628123456789',
+			reply_to: replyToMessageId,
+		});
+		return;
+	}
+
+	// Format participant ID
+	const participantId = targetNumber.includes('@') ? targetNumber : `${targetNumber}@c.us`;
+
+	try {
+		await kickMember(baseUrl, session, chatId, participantId, apiKey);
+		await client.sendText({
+			chatId,
+			text: `✅ Berhasil mengeluarkan member ${targetNumber} dari grup.`,
+			reply_to: replyToMessageId,
+		});
+	} catch (error) {
+		console.error('Error kicking member:', error);
+		await client.sendText({
+			chatId,
+			text: `❌ Gagal mengeluarkan member: ${error instanceof Error ? error.message : 'Unknown error'}`,
+			reply_to: replyToMessageId,
+		});
+	}
+}
+
+/**
+ * Handle /add command with admin check
+ * @param client WahaChatClient instance
+ * @param baseUrl Waha base URL
+ * @param session Session name
+ * @param apiKey API key
+ * @param chatId Group chat ID
+ * @param requesterId User who sent the command
+ * @param targetNumbers Phone numbers to add
+ * @param replyToMessageId Message ID to reply to
+ */
+export async function handleAddCommand(
+	client: WahaChatClient,
+	baseUrl: string,
+	session: string,
+	apiKey: string,
+	chatId: string,
+	requesterId: string,
+	targetNumbers: string[],
+	replyToMessageId: string,
+): Promise<void> {
+	// Check if requester is admin
+	const isAdminUser = await isAdmin(baseUrl, session, chatId, requesterId, apiKey);
+
+	if (!isAdminUser) {
+		await client.sendText({
+			chatId,
+			text: '❌ Maaf, hanya admin yang bisa menggunakan perintah ini.',
+			reply_to: replyToMessageId,
+		});
+		return;
+	}
+
+	// Validate target numbers
+	if (!targetNumbers || targetNumbers.length === 0) {
+		await client.sendText({
+			chatId,
+			text: '⚠️ Format: /add <nomor1,nomor2,...>\nContoh: /add 628123456789,628987654321',
+			reply_to: replyToMessageId,
+		});
+		return;
+	}
+
+	// Format participant IDs
+	const participantIds = targetNumbers.map((num) => (num.includes('@') ? num : `${num}@c.us`));
+
+	try {
+		const result = await addMember(baseUrl, session, chatId, participantIds, apiKey);
+		console.log('Add member result:', result);
+		await client.sendText({
+			chatId,
+			text: `✅ Berhasil menambahkan ${targetNumbers.length} member ke grup.`,
+			reply_to: replyToMessageId,
+		});
+	} catch (error) {
+		console.error('Error adding member:', error);
+		await client.sendText({
+			chatId,
+			text: `❌ Gagal menambahkan member: ${error instanceof Error ? error.message : 'Unknown error'}`,
+			reply_to: replyToMessageId,
+		});
+	}
+}
+
+// ==================== LEGACY WRAPPERS ====================
+/**
+ * Legacy wrapper for handleKickCommand
+ * @deprecated Use handleKickCommand with WahaChatClient instead
+ */
+export async function handleKickCommandLegacy(
+	baseUrl: string,
+	session: string,
+	apiKey: string,
+	chatId: string,
+	requesterId: string,
+	targetNumber: string,
+	replyToMessageId: string,
+) {
+	const config = _createManualWahaConfig(baseUrl, apiKey, session);
+	const client = new WahaChatClient(config);
+
+	return await handleKickCommand(
+		client,
+		baseUrl,
+		session,
+		apiKey,
+		chatId,
+		requesterId,
+		targetNumber,
+		replyToMessageId,
+	);
+}
+
+/**
+ * Legacy wrapper for handleAddCommand
+ * @deprecated Use handleAddCommand with WahaChatClient instead
+ */
+export async function handleAddCommandLegacy(
+	baseUrl: string,
+	session: string,
+	apiKey: string,
+	chatId: string,
+	requesterId: string,
+	targetNumbers: string[],
+	replyToMessageId: string,
+) {
+	const config = _createManualWahaConfig(baseUrl, apiKey, session);
+	const client = new WahaChatClient(config);
+
+	return await handleAddCommand(
+		client,
+		baseUrl,
+		session,
+		apiKey,
+		chatId,
+		requesterId,
+		targetNumbers,
+		replyToMessageId,
+	);
 }

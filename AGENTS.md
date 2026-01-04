@@ -60,11 +60,6 @@ bun run cf-typegen # Generate Cloudflare Worker types (updates worker-configurat
   - `session_name` - WhatsApp session name
   - `openrouter_key` - OpenRouter API key for AI features
 
-- **Database**:
-  - Uses PostgreSQL via Cloudflare Hyperdrive binding (`HYPERDRIVE`)
-  - Drizzle ORM for database operations (`src/db/schema.ts`)
-  - Schema includes: `group`, `participant_group`, `group_whatsapp`, `user`, `subscription`
-
 - **Access Control**:
   - `src/config/env.ts` defines allowed `GroupIds` and `PersonalIds`
   - Bot only responds to messages from configured groups/personal contacts
