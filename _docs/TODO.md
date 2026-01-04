@@ -16,8 +16,11 @@
 - [x] pindah ke bun
 - [x] terapin agents.md
 - [x] rapihin agents.md
-- [ ] sederhanakan skema database
-- [ ] atur settings di skema database
+- [x] migrasi postgres ke d1 db
+- [x] balik fokus ke skema dan db
+- [x] sederhanakan skema database
+- [x] atur settings di skema database
+- [ ] lakuin testing dulu ygy
 - [ ] implementasi fitur quiz
 - [ ] implementasi banyak api yang bisa dipake
 - [ ] tambahin fitur pengingat sholat

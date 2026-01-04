@@ -8,7 +8,7 @@ export { generateMathQuestions, formatMathQuiz, checkMathAnswers } from './mathQ
 
 // Database queries & services
 export * as dbQueries from '../db/queries';
-export { GroupService, createGroupService } from './services/groupService';
+export { GroupService, createGroupService } from './lib/groupService';
 
 // Chat client
 export { WahaChatClient, createChatClient } from './lib/chatting';

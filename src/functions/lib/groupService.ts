@@ -5,7 +5,7 @@
 
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import * as queries from '../../db/queries';
-import type { WahaChatClient } from '../lib/chatting';
+import type { WahaChatClient } from './chatting';
 
 // ==================== TYPES ====================
 

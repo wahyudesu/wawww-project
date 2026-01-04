@@ -22,29 +22,10 @@ export interface SendMediaOptions {
 	url: string;
 	caption?: string;
 	reply_to?: string | null;
-	mentions?: string[];
 }
 
 export interface SendFileOptions extends SendMediaOptions {
 	filename?: string;
-}
-
-export interface SendLocationOptions {
-	chatId: string;
-	latitude: number;
-	longitude: number;
-	name?: string;
-	address?: string;
-}
-
-export interface SendContactOptions {
-	chatId: string;
-	contacts: ContactMessage[];
-}
-
-export interface ContactMessage {
-	name: string;
-	phone: string;
 }
 
 export interface CreateGroupOptions {
@@ -52,21 +33,26 @@ export interface CreateGroupOptions {
 	participants: string[]; // Array of phone numbers (e.g., ["6281234567890"])
 }
 
-export interface SendButtonsOptions {
-	chatId: string;
-	header?: string;
-	body: string;
-	footer?: string;
-	buttons: ButtonMessage[];
-	reply_to?: string | null;
+// List Message Types
+export interface ListRow {
+	title: string;
+	rowId: string;
+	description?: string;
 }
 
-export interface ButtonMessage {
-	type: 'reply' | 'call' | 'copy' | 'url';
-	text: string;
-	phoneNumber?: string;
-	copyCode?: string;
-	url?: string;
+export interface ListSection {
+	title: string;
+	rows: ListRow[];
+}
+
+export interface SendListOptions {
+	chatId: string;
+	title: string;
+	description?: string;
+	footer?: string;
+	button: string;
+	sections: ListSection[];
+	reply_to?: string | null;
 }
 
 // ==================== CHAT CLIENT CLASS ====================
@@ -210,11 +196,13 @@ export class WahaChatClient {
 			headers: this.getHeaders(),
 			body: JSON.stringify({
 				chatId: options.chatId,
-				url: options.url,
+				file: {
+					url: options.url,
+					mimetype: 'image/jpeg',
+				},
 				caption: options.caption || '',
 				session: this.getSession(),
 				reply_to: options.reply_to || null,
-				mentions: options.mentions || [],
 			}),
 		});
 
@@ -241,7 +229,7 @@ export class WahaChatClient {
 		groupId: string,
 		imageUrl: string,
 		caption: string,
-		options?: { reply_to?: string; mentions?: string[] },
+		options?: { reply_to?: string },
 	): Promise<any> {
 		const chatId = formatGroupChatId(groupId);
 		return await this.sendImage({
@@ -249,7 +237,6 @@ export class WahaChatClient {
 			url: imageUrl,
 			caption,
 			reply_to: options?.reply_to,
-			mentions: options?.mentions,
 		});
 	}
 
@@ -266,12 +253,14 @@ export class WahaChatClient {
 			headers: this.getHeaders(),
 			body: JSON.stringify({
 				chatId: options.chatId,
-				url: options.url,
-				filename: options.filename || 'document',
+				file: {
+					url: options.url,
+					mimetype: 'application/octet-stream',
+					filename: options.filename || 'document',
+				},
 				caption: options.caption || '',
 				session: this.getSession(),
 				reply_to: options.reply_to || null,
-				mentions: options.mentions || [],
 			}),
 		});
 
@@ -329,11 +318,13 @@ export class WahaChatClient {
 			headers: this.getHeaders(),
 			body: JSON.stringify({
 				chatId: options.chatId,
-				url: options.url,
+				file: {
+					url: options.url,
+					mimetype: 'video/mp4',
+				},
 				caption: options.caption || '',
 				session: this.getSession(),
 				reply_to: options.reply_to || null,
-				mentions: options.mentions || [],
 			}),
 		});
 
@@ -352,131 +343,26 @@ export class WahaChatClient {
 		return await this.sendVideo({ chatId, url: videoUrl, caption });
 	}
 
-	// ==================== LOCATION MESSAGES ====================
+	// ==================== LIST MESSAGES ====================
 
 	/**
-	 * Kirim location ke chat
+	 * Kirim pesan dengan list (sections & rows)
 	 */
-	async sendLocation(options: SendLocationOptions): Promise<any> {
-		const apiUrl = `${this.getBaseUrl()}/api/sendLocation`;
+	async sendList(options: SendListOptions): Promise<any> {
+		const apiUrl = `${this.getBaseUrl()}/api/sendList`;
 
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: this.getHeaders(),
 			body: JSON.stringify({
 				chatId: options.chatId,
-				latitude: options.latitude,
-				longitude: options.longitude,
-				name: options.name || '',
-				address: options.address || '',
-				session: this.getSession(),
-			}),
-		});
-
-		if (!response.ok) {
-			const errorText = await response.text();
-			throw new Error(`Failed to send location: ${response.status} ${response.statusText} - ${errorText}`);
-		}
-
-		return await response.json();
-	}
-
-	/**
-	 * Kirim lokasi ke chat
-	 */
-	async sendLocationToChat(
-		chatId: string,
-		latitude: number,
-		longitude: number,
-		name?: string,
-		address?: string,
-	): Promise<any> {
-		return await this.sendLocation({ chatId, latitude, longitude, name, address });
-	}
-
-	// ==================== CONTACT MESSAGES ====================
-
-	/**
-	 * Kirim contact ke chat
-	 */
-	async sendContact(options: SendContactOptions): Promise<any> {
-		const apiUrl = `${this.getBaseUrl()}/api/sendContact`;
-
-		const response = await fetch(apiUrl, {
-			method: 'POST',
-			headers: this.getHeaders(),
-			body: JSON.stringify({
-				chatId: options.chatId,
-				contacts: options.contacts,
-				session: this.getSession(),
-			}),
-		});
-
-		if (!response.ok) {
-			const errorText = await response.text();
-			throw new Error(`Failed to send contact: ${response.status} ${response.statusText} - ${errorText}`);
-		}
-
-		return await response.json();
-	}
-
-	/**
-	 * Kirim kontak ke chat
-	 */
-	async sendContactToChat(chatId: string, contacts: ContactMessage[]): Promise<any> {
-		return await this.sendContact({ chatId, contacts });
-	}
-
-	// ==================== GROUP MANAGEMENT ====================
-
-	/**
-	 * Buat grup baru
-	 */
-	async createGroup(options: CreateGroupOptions): Promise<any> {
-		const apiUrl = `${this.getBaseUrl()}/api/createGroup`;
-
-		const response = await fetch(apiUrl, {
-			method: 'POST',
-			headers: this.getHeaders(),
-			body: JSON.stringify({
-				groupName: options.groupName,
-				participants: options.participants,
-				session: this.getSession(),
-			}),
-		});
-
-		if (!response.ok) {
-			const errorText = await response.text();
-			throw new Error(`Failed to create group: ${response.status} ${response.statusText} - ${errorText}`);
-		}
-
-		return await response.json();
-	}
-
-	/**
-	 * Buat grup baru dengan participants
-	 */
-	async createGroupWithParticipants(groupName: string, participants: string[]): Promise<any> {
-		return await this.createGroup({ groupName, participants });
-	}
-
-	// ==================== BUTTONS ====================
-
-	/**
-	 * Kirim pesan dengan buttons
-	 */
-	async sendButtons(options: SendButtonsOptions): Promise<any> {
-		const apiUrl = `${this.getBaseUrl()}/api/sendText`;
-
-		const response = await fetch(apiUrl, {
-			method: 'POST',
-			headers: this.getHeaders(),
-			body: JSON.stringify({
-				chatId: options.chatId,
-				header: options.header || '',
-				body: options.body,
-				footer: options.footer || '',
-				buttons: options.buttons,
+				message: {
+					title: options.title,
+					description: options.description || '',
+					footer: options.footer || '',
+					button: options.button,
+					sections: options.sections,
+				},
 				reply_to: options.reply_to || null,
 				session: this.getSession(),
 			}),
@@ -484,68 +370,24 @@ export class WahaChatClient {
 
 		if (!response.ok) {
 			const errorText = await response.text();
-			throw new Error(`Failed to send buttons: ${response.status} ${response.statusText} - ${errorText}`);
+			throw new Error(`Failed to send list: ${response.status} ${response.statusText} - ${errorText}`);
 		}
 
 		return await response.json();
 	}
 
 	/**
-	 * Kirim pesan dengan buttons ke chat
+	 * Kirim pesan dengan list ke chat
 	 */
-	async sendButtonsToChat(
+	async sendListToChat(
 		chatId: string,
-		body: string,
-		buttons: ButtonMessage[],
-		header?: string,
+		title: string,
+		button: string,
+		sections: ListSection[],
+		description?: string,
 		footer?: string,
 	): Promise<any> {
-		return await this.sendButtons({ chatId, header, body, footer, buttons });
-	}
-
-	// ==================== BULK MESSAGES ====================
-
-	/**
-	 * Kirim pesan bulk ke multiple chats
-	 */
-	async sendBulkText(
-		chatIds: string[],
-		message: string,
-	): Promise<{ success: string[]; failed: { chatId: string; error: string }[] }> {
-		const results = {
-			success: [] as string[],
-			failed: [] as { chatId: string; error: string }[],
-		};
-
-		for (const chatId of chatIds) {
-			try {
-				await this.sendText({ chatId, text: message });
-				results.success.push(chatId);
-			} catch (error: any) {
-				results.failed.push({ chatId, error: error.message });
-			}
-		}
-
-		return results;
-	}
-
-	/**
-	 * Broadcast pesan ke multiple personal chats
-	 */
-	async broadcastToPersons(
-		phoneNumbers: string[],
-		message: string,
-	): Promise<{ success: string[]; failed: { phone: string; error: string }[] }> {
-		const chatIds = phoneNumbers.map((phone) => formatPersonalChatId(phone));
-		const results = await this.sendBulkText(chatIds, message);
-
-		return {
-			success: results.success.map((id) => id.replace('@c.us', '')),
-			failed: results.failed.map((f) => ({
-				phone: f.chatId.replace('@c.us', ''),
-				error: f.error,
-			})),
-		};
+		return await this.sendList({ chatId, title, button, sections, description, footer });
 	}
 }
 
@@ -561,4 +403,3 @@ export async function createChatClient(env: any): Promise<WahaChatClient> {
 	const config = await createWahaConfig(env);
 	return new WahaChatClient(config);
 }
-

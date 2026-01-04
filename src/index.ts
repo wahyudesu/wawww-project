@@ -23,7 +23,7 @@ import doaHarianList from './data/doaharian.json';
 
 // import assignmentCron from './cron/assignment-cron';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
-import { handleJoinGroupEvent } from './handler/in-group';
+import { handleJoinGroupEvent } from './functions/lib/in-group';
 
 import { generateObject } from 'ai';
 import { z } from 'zod';

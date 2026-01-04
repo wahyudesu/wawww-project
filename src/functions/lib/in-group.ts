@@ -3,7 +3,7 @@
  * Uses D1 database and current schema
  */
 
-import * as queries from '../db/queries';
+import * as queries from '../../db/queries';
 
 export async function handleJoinGroupEvent(event: any, env: any) {
 	// Robustly extract group info from event
@@ -32,16 +32,17 @@ export async function handleJoinGroupEvent(event: any, env: any) {
 			if (!p?.id) continue;
 
 			// Convert to phone number format
-			const phone = p.id.replace('@s.whatsapp.net', '').replace('@c.us', '');
+			// Use pn field if available (already in @c.us format), otherwise normalize id
+			const rawId = p.pn || p.id;
+			const phone = rawId
+				.replace('@s.whatsapp.net', '')
+				.replace('@c.us', '')
+				.replace('@lid', '');
 
-			// Check role - admin roles include: admin, superadmin, owner
-			const role = p.role || (typeof p.admin === 'string' ? p.admin : 'participant');
-			const isAdminRole =
-				role === 'admin' ||
-				role === 'superadmin' ||
-				role === 'Admin' ||
-				role === 'SuperAdmin' ||
-				p.admin === true;
+			// Check role - according to Swagger spec: "left" | "participant" | "admin" | "superadmin"
+			// Default to "participant" if role is undefined
+			const role = p.role?.toLowerCase() || 'participant';
+			const isAdminRole = role === 'admin' || role === 'superadmin';
 
 			if (isAdminRole) {
 				admins.push(phone);

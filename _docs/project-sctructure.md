@@ -27,10 +27,7 @@ z0-project-latest/
 │   └── types.ts          # TypeScript type definitions
 ├── AGENTS.md             # Agent guidance (alias for CLAUDE.md)
 ├── CLAUDE.md             # Claude Code instructions
-├── package.json          # Dependencies and scripts
-├── tsconfig.json         # TypeScript configuration
 ├── wrangler.jsonc        # Cloudflare Worker configuration
-└── worker-configuration.d.ts  # Worker type definitions
 ```
 
 ## Key Modules

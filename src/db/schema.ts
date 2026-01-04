@@ -16,15 +16,17 @@ export function deserializeArray(jsonStr: string | null): string[] {
 }
 
 export const group_whatsapp = sqliteTable('group_whatsapp', {
-	id: text('id').primaryKey(), // WhatsApp group IDs are strings like "120363399604541928@g.us"
-	name: text('name', { length: 100 }).notNull(),
+	id: text().primaryKey(), // WhatsApp group IDs are strings like "120363399604541928@g.us"
+	name: text({ length: 100 }).notNull(),
 
-	ownerPhone: text('owner_phone').notNull(), // Owner's phone number
-	admin: text('admin'), // JSON string array of phone numbers
-	member: text('member'), // JSON string array of phone numbers
+	ownerPhone: text({ length: 20 }).notNull(), // Owner's phone number
+	admin: text(), // JSON string array of phone numbers
+	member: text(), // JSON string array of phone numbers
+	note: text('note'), // JSON string array of phone numbers
 
-	createdAt: text('created_at').$defaultFn(() => new Date().toISOString()).notNull(),
-	settings: text('settings', { mode: 'json' }).$type<{
+
+	createdAt: text().$defaultFn(() => new Date().toISOString()).notNull(),
+	settings: text({ mode: 'json' }).$type<{
 		welcome: boolean;
 		tagall: 'admin' | 'member' | 'owner';
 		welcomeMessage: string;
@@ -39,27 +41,25 @@ export const group_whatsapp = sqliteTable('group_whatsapp', {
 
 // USER
 export const user = sqliteTable('user', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
+	id: integer().primaryKey({ autoIncrement: true }),
 
-	name: text('name', { length: 100 }).notNull(),
-	no: text('no', { length: 20 }).notNull(),
-	email: text('email', { length: 100 }).unique(),
+	name: text({ length: 100 }).notNull(),
+	no: text({ length: 20 }).notNull(),
+	email: text({ length: 100 }).unique(),
 
-	note: text('note'), // note milik grup
-
-	createdAt: text('created_at').$defaultFn(() => new Date().toISOString()).notNull(),
-	updatedAt: text('updated_at').$defaultFn(() => new Date().toISOString()).notNull(),
+	createdAt: text().$defaultFn(() => new Date().toISOString()).notNull(),
+	updatedAt: text().$defaultFn(() => new Date().toISOString()).notNull(),
 });
 
 // STATUS
 export const subscription = sqliteTable('subscription', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
+	id: integer().primaryKey({ autoIncrement: true }),
 
-	userId: integer('user_id').notNull().references(() => user.id),
+	userId: integer().notNull().references(() => user.id),
 
-	plan: text('plan', { length: 50 }).notNull(), // free, pro, dll
-	status: text('status', { length: 20 }).notNull(), // active, expired
-	expiresAt: text('expires_at'), // ISO date string
+	plan: text({ length: 50 }).notNull(), // free, pro, dll
+	status: text({ length: 20 }).notNull(), // active, expired
+	expiresAt: text(), // ISO date string
 
-	createdAt: text('created_at').$defaultFn(() => new Date().toISOString()),
+	createdAt: text().$defaultFn(() => new Date().toISOString()),
 });
