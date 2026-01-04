@@ -5,6 +5,7 @@
 
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import * as queries from '../../db/queries';
+import * as schema from '../../db/schema';
 import type { WahaChatClient } from './chatting';
 
 // ==================== TYPES ====================
@@ -182,9 +183,9 @@ export class GroupService {
 			throw new Error('You don\'t have permission to use tagall');
 		}
 
-		// Get all members
-		const members = group.member || [];
-		const admins = group.admin || [];
+		// Get all members - deserialize from JSON
+		const members = schema.deserializeArray(group.member);
+		const admins = schema.deserializeArray(group.admin);
 
 		// Filter based on setting
 		const settings = group.settings as queries.GroupSettings;
@@ -224,10 +225,10 @@ export class GroupService {
 		if (setting === 'member') {
 			return true; // Everyone can use
 		} else if (setting === 'admin') {
-			return (group.admin || []).includes(requesterPhone);
+			return schema.deserializeArray(group.admin).includes(requesterPhone);
 		} else if (setting === 'owner') {
 			// Assuming first admin is owner
-			return (group.admin || [])?.[0] === requesterPhone;
+			return schema.deserializeArray(group.admin)?.[0] === requesterPhone;
 		}
 
 		return false;

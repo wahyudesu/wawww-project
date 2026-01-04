@@ -27,7 +27,7 @@ export {
 	sendMathQuizAsList,
 	type MathQuestion,
 	type MathQuizState,
-} from './mathQuiz';
+} from './math-quiz';
 export { handleBitcoinCommand, handleBitcoinCommandLegacy } from './bitcoin';
 
 // Welcoming & Event Handlers
@@ -35,7 +35,7 @@ export {
 	handleWelcoming,
 	handleWelcomingLegacy,
 	isGroupParticipantsUpdate,
-} from './welcoming';
+} from './welcoming-message';
 export {
 	handleGroupEvent,
 	isGroupParticipantsUpdateEvent,
