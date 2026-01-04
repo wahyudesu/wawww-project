@@ -38,30 +38,40 @@
 
 # prompt update besar besaran cuy (anjir claude code ini kebanyakan types wak)
 
-1. AGENTS.md dan docs terlebih dahulu
-1. DB terlebih dahulu
-1. masih soal lib, fungsi fungsi pentinngnya apa dulu
+AGENTS.md dan docs + db schema
+---
+buatkan saya fitur command /set dengan fungsi sebagai berikut
 
-dari lib ini fitur chatting udah bekerja dengan baik, selanjutnya adalah membuat fungsi fungsi yang nantinya bakal 
+sesuaikan fungsi tagall supaya bisa disetting lewat database, yg bisa make tagall tuh admin, atau semua orang, cara ngesetnya tuh /set tagall 
+admin /set tagall admin
 
-perbaiki fitur bitcoin
-tebak tebakan matematika pake kirim list interaktif
+sesuaikan fungsi welcome supaya bisa diaktifin /dinonaktifin, /set welcome on untuk nyala dan /set welcome off untuk matiin
+
+bisa set on off jadwal sholat
+
+semua set ini itu buat ngubah setting di database dari command message yg didapat 
+---
+buatkan saya fitur untuk mencari judul anime dengan referensi seperti berikut ...
+---
+setiap masuk ke grup lakukan fetch informasi dan simpan informasi nya ke database, contoh event datanya seperti ini ...
+---
 kick dan add member dgn parameter number tergantung yang nyuruh siapa, kalau admin boleh
+---
 doa harian yang mengirim informasi doa secara acak dari data/doaharian.jsosn
+---
+buatkan saya kuis kuis kuis nay adaa beberap ajenis, ada kuis t ebak tebakan ada kuis dimana orangvny diberi hadiah berupa permen dan dinosasuru sselanjuy na disini say ahany amkenulis fitur fitur saya yang digunakan oleh orang lain dan saya juga saay itu diberikan oleh roang lain kebahagiaan untuk menemukan apa yang b isa say ajad
+---
+buatkan saya fitur untuk mendeteksi jika itu link termasuk iklan apa nggak, jadi tiap ada deteksi link itu dilakukan pengecekan, jika terdeteksi iklan maka peringati user tersebut
+---
 /dev menampilkan developer info yang telah didefinisikan
-- /opengroup membuka grup supaya semua orang bisa mengirim pesan
-- /menutup grup supaya hanya admin yang bisa mengirim pesan
-- /taglall mention all group, tapi kkni semua orang dan admin dan membner untuk menggunnakan fitur tersebut 
-- /pantun random pantun indonesia
-- /mendeteksi jika itu link termasuk iklan apa nggak
-- /kuis kuis nay adaa beberap ajenis, ada kuis t ebak tebakan ada kuis dimana orangvny diberi hadiah berupa permen dan dinosasuru sselanjuy na disini say ahany amkenulis fitur fitur saya yang digunakan oleh orang lain dan saya juga saay itu diberikan oleh roang lain kebahagiaan untuk menemukan apa yang b isa say ajad
 
 nanti baru fokus buat ngerjain magna partner
+---
+fitur utk download media dari link yg dilampirin, bisa youtube, tiktok, fb, ig
 
-
-- ini aja dari fondasi prompt guide awal harus clear duluan bro
-- buatkan saya fitur untuk download tiktok/yt/fb
-- buatkan saya fitur untuk mendeteksi bahwa postingannya itu memuat link
+/download link
+---
+buat function untuk ngambil data owner pada tiap grup untuk dikirimin pesan tertentu, pesannya bakal panjang jadi formatnya markdown di @send 
 - fitur tag all hanya bisa dilakukan oleh admin, kecuali bisa 
 - sesuaikan kembali fitur admin bisa kik, add, tutup grup
 - ngambil data owner pada tiap grup buat dimasukin ke database

@@ -15,11 +15,12 @@ import type { GroupParticipantsUpdateEvent } from './lib/in-group';
  * Main welcoming handler - detects event type and handles accordingly
  * @param event Event object from Waha webhook
  * @param client WahaChatClient instance
+ * @param env Optional environment object for database access
  */
-export async function handleWelcoming(event: unknown, client: WahaChatClient): Promise<void> {
+export async function handleWelcoming(event: unknown, client: WahaChatClient, env?: any): Promise<void> {
 	try {
 		// Use the unified handler from lib/in-group.ts
-		await handleGroupEvent(event, client);
+		await handleGroupEvent(event, client, env);
 	} catch (error) {
 		console.error('Error in welcoming handler:', error);
 		throw error;

@@ -116,6 +116,7 @@ export function parseParticipantsFromEvent(
 export async function handleGroupParticipantsUpdate(
 	event: GroupParticipantsUpdateEvent,
 	client: WahaChatClient,
+	env?: any,
 ): Promise<void> {
 	if (!isMemberAddEvent(event)) {
 		console.log(`Event action is '${event.payload.data.action}', skipping (only 'add' is handled)`);
@@ -130,6 +131,24 @@ export async function handleGroupParticipantsUpdate(
 
 	const { data } = event.payload;
 	const groupId = data.id;
+
+	// Check database for welcome setting (if env is provided)
+	if (env?.DB) {
+		try {
+			const { getDb, getGroupByChatId } = await import('../../db/queries');
+			const db = getDb(env.DB as any);
+			const group = await getGroupByChatId(db, groupId);
+
+			// Skip if welcome is disabled
+			if (group?.settings?.welcome === false) {
+				console.log(`Welcome is disabled for group ${groupId}, skipping`);
+				return;
+			}
+		} catch (error) {
+			console.error('Error checking welcome settings:', error);
+			// Continue anyway if check fails
+		}
+	}
 
 	console.log(
 		`Welcoming ${participants.length} new member(s) to group ${groupId}`,
@@ -177,6 +196,7 @@ async function sendWelcomeMessage(
 export async function handleGroupEvent(
 	event: unknown,
 	client: WahaChatClient,
+	env?: any,
 ): Promise<void> {
 	if (!event || typeof event !== 'object') {
 		console.log('Invalid event object');
@@ -185,7 +205,7 @@ export async function handleGroupEvent(
 
 	// Handle group-participants.update event
 	if (isGroupParticipantsUpdateEvent(event)) {
-		await handleGroupParticipantsUpdate(event, client);
+		await handleGroupParticipantsUpdate(event, client, env);
 		return;
 	}
 

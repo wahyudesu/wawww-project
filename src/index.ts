@@ -50,7 +50,7 @@ async function handleEvent(request: Request, env: any): Promise<Response> {
 
 	// Handle group join events
 	if (data.event === 'group.v2.participants') {
-		return await handleGroupParticipantsEvent(data, client);
+		return await handleGroupParticipantsEvent(data, client, env);
 	}
 
 	if (data.event === 'group.v2.join') {
@@ -85,12 +85,28 @@ async function handleEvent(request: Request, env: any): Promise<Response> {
 	return new Response(JSON.stringify({ status: 'received', event: data }), { status: 200, headers: corsHeaders });
 }
 
-async function handleGroupParticipantsEvent(data: any, client: any): Promise<Response> {
+async function handleGroupParticipantsEvent(data: any, client: any, env: any): Promise<Response> {
 	const groupPayload = data.payload;
 
 	if (groupPayload.type === 'join' && groupPayload.group && groupPayload.participants) {
 		const groupId = groupPayload.group.id;
 		const joinedParticipants = groupPayload.participants;
+
+		// Check if welcome is enabled in database
+		const { getDb, getGroupByChatId } = await import('./db/queries');
+		const db = getDb(env.DB as any);
+		const group = await getGroupByChatId(db, groupId);
+
+		// Default to welcome enabled if no settings found
+		const welcomeEnabled = group?.settings?.welcome ?? true;
+
+		if (!welcomeEnabled) {
+			console.log(`Welcome is disabled for group ${groupId}`);
+			return new Response(JSON.stringify({ status: 'welcome disabled' }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
 
 		for (const participant of joinedParticipants) {
 			const participantId = participant.id;

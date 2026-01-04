@@ -6,8 +6,6 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"test": "vitest",
-		"test:chatting": "bun run src/functions/lib/test-chatting.ts",
 		"cf-typegen": "wrangler types",
 		"generate": "drizzle-kit generate",
 		"migrate": "drizzle-kit migrate",

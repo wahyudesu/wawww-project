@@ -26,6 +26,11 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 		'/add <nomor1,nomor2> - Tambahkan member ke grup',
 		'/closegroup - Tutup grup (hanya admin yang bisa chat)',
 		'/opengroup - Buka grup (semua bisa chat)',
+		'/set <setting> <value> - Atur pengaturan grup',
+		'  • /set tagall admin - Hanya admin bisa tagall',
+		'  • /set tagall all - Semua bisa tagall',
+		'  • /set welcome on - Aktifkan welcome',
+		'  • /set welcome off - Matikan welcome',
 		'/debugadmin - Cek status admin (debug)',
 		'',
 	].join('\n');

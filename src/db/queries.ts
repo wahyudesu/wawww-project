@@ -46,6 +46,15 @@ export async function getGroupByChatId(
 }
 
 /**
+ * Get all groups
+ */
+export async function getAllGroups(
+	db: DrizzleD1Database<typeof schema>,
+): Promise<GroupWhatsAppSelect[]> {
+	return await db.select().from(schema.group_whatsapp);
+}
+
+/**
  * Upsert group (insert or update)
  */
 export async function upsertGroup(

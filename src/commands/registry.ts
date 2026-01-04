@@ -17,6 +17,7 @@ import closegroupHandler from './handlers/closegroup';
 import opengroupHandler from './handlers/opengroup';
 import debugadminHandler from './handlers/debugadmin';
 import aiHandler from './handlers/ai';
+import setHandler from './handlers/set';
 
 // Register all commands
 registerCommand('/help', { handler: helpHandler, description: 'Show all commands' });
@@ -43,3 +44,4 @@ registerCommand('/debugadmin', {
 	description: 'Debug admin status',
 });
 registerCommand('/ai', { handler: aiHandler, description: 'AI assistant' });
+registerCommand('/set', { handler: setHandler, adminOnly: true, description: 'Manage group settings' });
