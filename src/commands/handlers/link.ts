@@ -6,10 +6,14 @@
 
 import type { WahaChatClient } from '../../functions/lib/chatting';
 import type { CommandContext, CommandHandler } from '../index';
-import { MediaDownloadService, RateLimitService } from '../../services';
+import { MediaDownloadService } from '../../services';
+import { SimpleRateLimiter } from '../../utils/rateLimiter';
+
+// Singleton rate limiter instance
+const rateLimiter = new SimpleRateLimiter();
 
 const handler: CommandHandler = async (client: WahaChatClient, context: CommandContext) => {
-	const { chatId, replyTo, text, env } = context;
+	const { chatId, replyTo, text } = context;
 
 	// 1. Extract and validate URL
 	const url = text?.replace('/link', '').trim();
@@ -34,29 +38,19 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 	}
 
 	// 2. Check rate limit
-	if (!env.RATE_LIMIT_KV) {
-		await client.sendText({
-			chatId,
-			text: '⚠️ Rate limit service tidak tersedia. Hubungi admin.',
-			reply_to: replyTo,
-		});
-		return new Response(JSON.stringify({ status: 'rate limit service unavailable' }), { status: 200 });
-	}
-
-	const rateLimitService = new RateLimitService(env.RATE_LIMIT_KV);
-	const limitCheck = await rateLimitService.checkLimit(chatId);
+	const limitCheck = rateLimiter.checkLimit(chatId);
 
 	if (!limitCheck.allowed) {
 		await client.sendText({
 			chatId,
-			text: `⏱️ Rate limit tercapai! Coba lagi dalam 1 jam.\n\nLimit: 5 request/jam per grup`,
+			text: `⏱️ Rate limit tercapai! Coba lagi dalam ${limitCheck.resetIn || 60} detik.\n\nLimit: 5 request/jam per grup`,
 			reply_to: replyTo,
 		});
 		return new Response(JSON.stringify({ status: 'rate limited' }), { status: 200 });
 	}
 
 	// 3. Download media
-	const cobaltApiUrl = env.COBALT_API_URL || 'https://cobalt.tools';
+	const cobaltApiUrl = context.env?.COBALT_API_URL || 'https://cobalt.tools';
 	const downloadService = new MediaDownloadService(cobaltApiUrl);
 
 	try {
@@ -96,7 +90,7 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 		}
 
 		// 5. Increment rate limit
-		await rateLimitService.incrementUsage(chatId);
+		rateLimiter.incrementUsage(chatId);
 
 		console.log(`✅ Successfully downloaded and sent media from ${url}`);
 		return new Response(JSON.stringify({ status: 'download sent' }), { status: 200 });
