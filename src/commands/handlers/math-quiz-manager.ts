@@ -12,6 +12,7 @@ export interface ActiveQuiz {
 	difficulty: MathDifficulty;
 	startTime: number;
 	expiresAt: number;
+	score: number; // Track correct answers
 }
 
 export interface QuizResult {
@@ -89,6 +90,7 @@ export function startQuiz(
 		difficulty,
 		startTime: Date.now(),
 		expiresAt: Date.now() + QUIZ_EXPIRY_MS,
+		score: 0, // Initialize score
 	};
 
 	activeQuizzes.set(chatId, quiz);
@@ -157,12 +159,18 @@ export function checkAnswer(chatId: string, selectedRowId: string): QuizResult |
 	const isCorrect = question.correctAnswer === answerNum;
 	const correctAnswerText = question.options[question.correctAnswer];
 
+	// Update score if correct
 	if (isCorrect) {
-		// Move to next question or end quiz
-		if (quiz.currentQuestionIndex < quiz.questions.length - 1) {
-			quiz.currentQuestionIndex++;
-			const remainingQuestions = quiz.questions.length - quiz.currentQuestionIndex;
-			const nextQuestion = quiz.questions[quiz.currentQuestionIndex];
+		quiz.score++;
+	}
+
+	// Move to next question or end quiz
+	if (quiz.currentQuestionIndex < quiz.questions.length - 1) {
+		quiz.currentQuestionIndex++;
+		const remainingQuestions = quiz.questions.length - quiz.currentQuestionIndex;
+		const nextQuestion = quiz.questions[quiz.currentQuestionIndex];
+
+		if (isCorrect) {
 			return {
 				isCorrect: true,
 				correctAnswer: correctAnswerText,
@@ -170,29 +178,39 @@ export function checkAnswer(chatId: string, selectedRowId: string): QuizResult |
 				message: `✅ Benar! ${correctAnswerText} adalah jawaban yang tepat!\n\n🎯 Soal tersisa: ${remainingQuestions}\n\nPilih jawaban untuk soal berikutnya:`,
 			};
 		} else {
-			// Quiz completed
-			activeQuizzes.delete(chatId);
-			quizCooldowns.set(chatId, Date.now());
 			return {
-				isCorrect: true,
+				isCorrect: false,
 				correctAnswer: correctAnswerText,
-				quizCompleted: true,
-				message: `🎉 SELAMAT! Kamu menjawab semua soal dengan benar!\n\n🧮 Kuis selesai!\n\n⏰ Cooldown: 5 menit\nKetik /math untuk main lagi.`,
+				nextQuestion,
+				message: `❌ Yah, jawaban yang benar adalah: ${correctAnswerText}\n\n🎯 Soal tersisa: ${remainingQuestions}\n\nLanjut ke soal berikutnya:`,
 			};
 		}
 	} else {
-		// Wrong answer - end quiz
+		// Quiz completed - show final score
 		activeQuizzes.delete(chatId);
 		quizCooldowns.set(chatId, Date.now());
 
-		// Encouraging message based on how many they got right
-		const questionsAttempted = quiz.currentQuestionIndex + 1;
+		const finalScore = quiz.score;
 		const totalQuestions = quiz.questions.length;
+		const percentage = Math.round((finalScore / totalQuestions) * 100);
+
+		let completionMessage = '';
+
+		if (percentage === 100) {
+			completionMessage = `🎉 SEMPURNA! Kamu menjawab semua soal dengan benar!\n\n`;
+		} else if (percentage >= 66) {
+			completionMessage = `👍 Bagus sekali! Kamu menjawab ${finalScore} dari ${totalQuestions} soal dengan benar!\n\n`;
+		} else if (percentage >= 33) {
+			completionMessage = `💪 Lumayan! Kamu menjawab ${finalScore} dari ${totalQuestions} soal dengan benar.\n\nTerus berlatih ya!\n\n`;
+		} else {
+			completionMessage = `📚 Kamu menjawab ${finalScore} dari ${totalQuestions} soal dengan benar.\n\nJangan menyerah! Coba lagi nanti.\n\n`;
+		}
 
 		return {
-			isCorrect: false,
+			isCorrect: isCorrect,
 			correctAnswer: correctAnswerText,
-			message: `❌ Yah, jawaban yang benar adalah: ${correctAnswerText}\n\n💪 Jangan menyerah! Tetap semangat belajar ya!\n\nKamu sudah mencoba ${questionsAttempted} dari ${totalQuestions} soal.\n\n⏰ Cooldown: 5 menit\nKetik /math untuk coba lagi.`,
+			quizCompleted: true,
+			message: `${completionMessage}🧮 Kuis selesai!\n\n⏰ Cooldown: 5 menit\nKetik /math untuk main lagi.`,
 		};
 	}
 }
@@ -233,6 +251,7 @@ export function getQuizStats(chatId: string): {
 	currentQuestion: number;
 	totalQuestions: number;
 	difficulty: string;
+	score: number;
 } | null {
 	const quiz = getActiveQuiz(chatId);
 
@@ -244,5 +263,6 @@ export function getQuizStats(chatId: string): {
 		currentQuestion: quiz.currentQuestionIndex + 1,
 		totalQuestions: quiz.questions.length,
 		difficulty: quiz.difficulty,
+		score: quiz.score,
 	};
 }

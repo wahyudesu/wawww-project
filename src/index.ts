@@ -7,6 +7,9 @@ import { parseCommand, getCommand } from './commands';
 import { isGroupChat } from './config/waha';
 import { checkAnswer } from './commands/handlers/math-quiz-manager';
 import './commands/registry'; // Register all commands
+import { PrayerTimeService } from './services/PrayerTimeService';
+import { PrayerReminderService } from './services/PrayerReminderService';
+import { getPrayerNameFromCron, calculateDelay, sleep, type PrayerName } from './utils/scheduler';
 
 const corsHeaders = {
 	'Access-Control-Allow-Origin': '*',
@@ -30,7 +33,72 @@ export default {
 
 		return new Response('Not found', { status: 404, headers: corsHeaders });
 	},
+
+	/**
+	 * Scheduled handler for cron triggers
+	 * Handles prayer reminder notifications at scheduled times
+	 */
+	async scheduled(
+		controller: { cron: string; scheduledTime: number },
+		env: any,
+		ctx: { waitUntil: (promise: Promise<any>) => void },
+	): Promise<void> {
+		console.log(`[Scheduled] Cron triggered: ${controller.cron} at ${new Date(controller.scheduledTime).toISOString()}`);
+
+		// Use waitUntil for async execution (prevents worker timeout)
+		ctx.waitUntil(
+			handlePrayerReminder(controller.cron, controller.scheduledTime, env).catch(
+				(error) => {
+					console.error('[Scheduled] Prayer reminder failed:', error);
+				},
+			),
+		);
+	},
 };
+
+/**
+ * Handle prayer reminder scheduled task
+ */
+async function handlePrayerReminder(
+	cron: string,
+	scheduledTime: number,
+	env: any,
+): Promise<void> {
+	console.log('[PrayerReminder] Starting prayer reminder process...');
+
+	try {
+		// 1. Get prayer name from cron expression
+		const prayerName = getPrayerNameFromCron(cron);
+		console.log(`[PrayerReminder] Prayer: ${prayerName}`);
+
+		// 2. Get prayer times from API
+		const prayerTimeService = new PrayerTimeService();
+		const prayerTimes = await prayerTimeService.getPrayerTimes(new Date(scheduledTime));
+
+		// 3. Get the target prayer time
+		const targetTime = prayerTimes[prayerName]; // e.g., "04:45"
+		console.log(`[PrayerReminder] Target time: ${targetTime} WIB`);
+
+		// 4. Calculate delay
+		const delay = calculateDelay(targetTime, scheduledTime);
+		console.log(`[PrayerReminder] Waiting ${delay}ms until prayer time...`);
+
+		// 5. Wait until exact prayer time
+		if (delay > 0) {
+			await sleep(delay);
+		}
+
+		// 6. Send reminder
+		const client = await createChatClient(env);
+		const reminderService = new PrayerReminderService(client, env);
+		await reminderService.sendPrayerReminder(prayerName, targetTime);
+
+		console.log(`[PrayerReminder] Completed successfully for ${prayerName}`);
+	} catch (error) {
+		console.error('[PrayerReminder] Error:', error);
+		throw error;
+	}
+}
 
 async function handleListResponse(payload: any, client: any): Promise<Response> {
 	const chatId = payload.from;

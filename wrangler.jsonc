@@ -44,10 +44,18 @@
 	/**
 	 * Cron Triggers
 	 * https://developers.cloudflare.com/workers/configuration/cron-triggers/
+	 *
+	 * Prayer Reminder Crons (WIB = UTC + 7)
+	 * Each cron runs 5 minutes before estimated prayer time
 	 */
 	"triggers": {
-		// Runs every day at 07:00 GMT+7 (which is 18:45 UTC the previous day)
-		"crons": ["46 19 * * *"],
+		"crons": [
+			"40 21 * * *", // Subuh - triggers at 04:40 WIB (21:40 UTC)
+			"55 4 * * *", // Dzuhur - triggers at 11:55 WIB (04:55 UTC)
+			"25 8 * * *", // Ashar - triggers at 15:25 WIB (08:25 UTC)
+			"0 11 * * *", // Maghrib - triggers at 18:00 WIB (11:00 UTC)
+			"15 12 * * *", // Isya - triggers at 19:15 WIB (12:15 UTC)
+		]
 	},
 	/**
 	 * Smart Placement
