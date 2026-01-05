@@ -2,9 +2,5 @@
 # File .dev.vars sudah di-ignore oleh git untuk keamanan
 
 # Database URL untuk Drizzle ORM (migration, dll)
-# Format: postgresql://user:password@localhost:5432/database_name
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/whatsapp_bot
-
-# Optional: Override Hyperdrive local connection string
-# Jika tidak di-set, akan menggunakan nilai dari wrangler.jsonc
-# WRANGLER_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE=postgresql://postgres:postgres@localhost:5432/whatsapp_bot
+# Format: file:./local.db (untuk SQLite lokal)
+DATABASE_URL=file:./local.db

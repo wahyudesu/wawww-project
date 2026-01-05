@@ -1,0 +1,34 @@
+{
+  "id": "evt_01ke51344mmx9pg88a395v56wh",
+  "session": "session_01jx523c9fdzcaev186szgc67h",
+  "event": "engine.event",
+  "payload": {
+    "event": "group-participants.update",
+    "data": {
+      "id": "120363420004681217@g.us",
+      "author": null,
+      "participants": [
+        {
+          "id": "14397099512030@lid",
+          "phoneNumber": "6285174346212@s.whatsapp.net",
+          "admin": null
+        }
+      ],
+      "action": "add"
+    }
+  },
+  "timestamp": 1767547965588,
+  "metadata": {},
+  "me": {
+    "id": "6282142667503@c.us",
+    "pushName": "z0-chatbot",
+    "lid": "193428717568201@lid"
+  },
+  "engine": "NOWEB",
+  "environment": {
+    "version": "2025.12.2",
+    "engine": "NOWEB",
+    "tier": "PLUS",
+    "browser": null
+  }
+}

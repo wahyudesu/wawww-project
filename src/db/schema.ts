@@ -1,57 +1,65 @@
 // src/db/schema.ts
-import { pgTable, varchar, text, date, smallint, uuid } from 'drizzle-orm/pg-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+
+// Helper functions for array handling (SQLite doesn't support arrays natively)
+export function serializeArray(arr: string[]): string {
+	return JSON.stringify(arr);
+}
+
+export function deserializeArray(jsonStr: string | null): string[] {
+	if (!jsonStr) return [];
+	try {
+		return JSON.parse(jsonStr);
+	} catch {
+		return [];
+	}
+}
+
+export const group_whatsapp = sqliteTable('group_whatsapp', {
+	id: text().primaryKey(), // WhatsApp group IDs are strings like "120363399604541928@g.us"
+	name: text({ length: 100 }).notNull(),
+
+	ownerPhone: text({ length: 20 }).notNull(), // Owner's phone number
+	admin: text(), // JSON string array of phone numbers
+	member: text(), // JSON string array of phone numbers
+	note: text('note'), // JSON string array of phone numbers
+
+
+	createdAt: text().$defaultFn(() => new Date().toISOString()).notNull(),
+	settings: text({ mode: 'json' }).$type<{
+		welcome: boolean;
+		tagall: 'admin' | 'member' | 'owner';
+		welcomeMessage: string;
+		sholatreminder: boolean;
+	}>().$defaultFn(() => ({
+		welcome: true, // true, false
+		tagall: 'admin', // admin, member, owner
+		welcomeMessage: 'Selamat datang di grup {name}!, semoga betah', // custom message
+		sholatreminder: false, // true, false
+	})),
+});
 
 // USER
-export const user = pgTable('user', {
-	   id: uuid().primaryKey(),
-	   status: varchar({ length: 50 }).references(() => status.id),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
-	   name: varchar({ length: 100 }).notNull(),
-	   no: varchar({ length: 15 }).notNull(),
-	   email: varchar({ length: 100 }).unique(),
-	   created_at: date().defaultNow(),
+export const user = sqliteTable('user', {
+	id: integer().primaryKey({ autoIncrement: true }),
+
+	name: text({ length: 100 }).notNull(),
+	no: text({ length: 20 }).notNull(),
+	email: text({ length: 100 }).unique(),
+
+	createdAt: text().$defaultFn(() => new Date().toISOString()).notNull(),
+	updatedAt: text().$defaultFn(() => new Date().toISOString()).notNull(),
 });
 
 // STATUS
-export const status = pgTable('status', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   label: varchar({ length: 50 }).default('basic'), //basic or premium
-	   start_date: date().defaultNow(),
-	   end_date: date() 
-});
+export const subscription = sqliteTable('subscription', {
+	id: integer().primaryKey({ autoIncrement: true }),
 
-// GROUP
-export const group = pgTable('group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   name: varchar({ length: 100 }).notNull(),
-	   type: varchar({ length: 50 }),
-});
+	userId: integer().notNull().references(() => user.id),
 
-// PARTICIPANT_GROUP
-export const participant_group = pgTable('participant_group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   no: varchar({ length: 15 }),
-	   role: varchar({ length: 15 }),
-	   sum_message: smallint().default(0),
-	   country: varchar({ length: 50 }),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
-	   month: date(),
-});
+	plan: text({ length: 50 }).notNull(), // free, pro, dll
+	status: text({ length: 20 }).notNull(), // active, expired
+	expiresAt: text(), // ISO date string
 
-// TUGAS_GROUP
-export const tugas_group = pgTable('tugas_group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   name: varchar({ length: 100 }).notNull(),
-	   description: text(),
-	   due_date: date(),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
-	   created_at: date(),
-});
-
-// NOTE_GROUP
-export const note_group = pgTable('note_group', {
-	   id: varchar({ length: 50 }).primaryKey(),
-	   note: text(),
-	   updated_at: date(),
-	   group_id: varchar({ length: 50 }).references(() => group.id),
+	createdAt: text().$defaultFn(() => new Date().toISOString()),
 });
