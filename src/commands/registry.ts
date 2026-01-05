@@ -19,33 +19,79 @@ import debugadminHandler from './handlers/debugadmin';
 import aiHandler from './handlers/ai';
 import setHandler from './handlers/set';
 import linkHandler from './handlers/link';
+import { pagiHandler, siangHandler, malamHandler } from './handlers/greetings';
 
 // Register all commands
 registerCommand('/help', { handler: helpHandler, description: 'Show all commands' });
-registerCommand('/tagall', { handler: tagallHandler, description: 'Mention all group members' });
-registerCommand('/pantun', { handler: pantunHandler, description: 'Random pantun' });
-registerCommand('/doaharian', { handler: doaharianHandler, description: 'Random daily prayer' });
+registerCommand('/tagall', {
+	handler: tagallHandler,
+	groupOnly: true,
+	description: 'Mention all group members',
+});
+registerCommand('/pagi', {
+	handler: pagiHandler,
+	groupOnly: true,
+	description: 'Salam pagi',
+});
+registerCommand('/siang', {
+	handler: siangHandler,
+	groupOnly: true,
+	description: 'Salam siang',
+});
+registerCommand('/malam', {
+	handler: malamHandler,
+	groupOnly: true,
+	description: 'Salam malam',
+});
+registerCommand('/pantun', {
+	handler: pantunHandler,
+	groupOnly: true,
+	description: 'Random pantun',
+});
+registerCommand('/doaharian', {
+	handler: doaharianHandler,
+	groupOnly: true,
+	description: 'Random daily prayer',
+});
 registerCommand('/bitcoin', { handler: bitcoinHandler, description: 'Check Bitcoin price' });
 registerCommand('/math', { handler: mathHandler, description: 'Math quiz' });
 registerCommand('/dev', { handler: devHandler, description: 'Developer info' });
-registerCommand('/kick', { handler: kickHandler, adminOnly: true, description: 'Kick member (admin only)' });
-registerCommand('/add', { handler: addHandler, adminOnly: true, description: 'Add member (admin only)' });
+registerCommand('/kick', {
+	handler: kickHandler,
+	adminOnly: true,
+	groupOnly: true,
+	description: 'Kick member (admin only)',
+});
+registerCommand('/add', {
+	handler: addHandler,
+	adminOnly: true,
+	groupOnly: true,
+	description: 'Add member (admin only)',
+});
 registerCommand('/closegroup', {
 	handler: closegroupHandler,
 	adminOnly: true,
+	groupOnly: true,
 	description: 'Close group (admin only)',
 });
 registerCommand('/opengroup', {
 	handler: opengroupHandler,
 	adminOnly: true,
+	groupOnly: true,
 	description: 'Open group (admin only)',
 });
 registerCommand('/debugadmin', {
 	handler: debugadminHandler,
+	groupOnly: true,
 	description: 'Debug admin status',
 });
 registerCommand('/ai', { handler: aiHandler, description: 'AI assistant' });
-registerCommand('/set', { handler: setHandler, adminOnly: true, description: 'Manage group settings' });
+registerCommand('/set', {
+	handler: setHandler,
+	adminOnly: true,
+	groupOnly: true,
+	description: 'Manage group settings',
+});
 registerCommand('/link', {
 	handler: linkHandler,
 	description: 'Download media from YouTube, TikTok, Instagram, Facebook. Rate limited: 5/hour',
