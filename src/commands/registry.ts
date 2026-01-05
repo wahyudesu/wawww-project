@@ -18,6 +18,7 @@ import opengroupHandler from './handlers/opengroup';
 import debugadminHandler from './handlers/debugadmin';
 import aiHandler from './handlers/ai';
 import setHandler from './handlers/set';
+import linkHandler from './handlers/link';
 
 // Register all commands
 registerCommand('/help', { handler: helpHandler, description: 'Show all commands' });
@@ -45,3 +46,7 @@ registerCommand('/debugadmin', {
 });
 registerCommand('/ai', { handler: aiHandler, description: 'AI assistant' });
 registerCommand('/set', { handler: setHandler, adminOnly: true, description: 'Manage group settings' });
+registerCommand('/link', {
+	handler: linkHandler,
+	description: 'Download media from YouTube, TikTok, Instagram, Facebook. Rate limited: 5/hour',
+});

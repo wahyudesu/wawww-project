@@ -281,3 +281,13 @@ export async function upsertUser(
 		return result[0];
 	}
 }
+
+/**
+ * Delete group from database
+ */
+export async function deleteGroup(
+	db: DrizzleD1Database<typeof schema>,
+	chatId: string,
+): Promise<void> {
+	await db.delete(schema.group_whatsapp).where(eq(schema.group_whatsapp.id, chatId));
+}

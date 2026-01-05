@@ -2,6 +2,7 @@ import { getWorkerEnv } from './config/env';
 import { createChatClient } from './functions';
 import { checkToxic, getToxicWarning } from './functions';
 import { handleJoinGroupEvent } from './functions/lib/in-group';
+import { handleGroupEvent, isGroupV2ParticipantsEvent, isBotRemovedEvent } from './functions/groups-handler';
 import { parseCommand, getCommand } from './commands';
 import './commands/registry'; // Register all commands
 
@@ -88,6 +89,21 @@ async function handleEvent(request: Request, env: any): Promise<Response> {
 async function handleGroupParticipantsEvent(data: any, client: any, env: any): Promise<Response> {
 	const groupPayload = data.payload;
 
+	// Check if bot was removed from group
+	if (isGroupV2ParticipantsEvent(data)) {
+		const botPhoneId = data.me?.id || '';
+		if (isBotRemovedEvent(data, botPhoneId)) {
+			console.log('[GroupEvent] Bot was removed from group, deleting from database...');
+			const result = await handleGroupEvent(data, botPhoneId, env);
+			console.log('[GroupEvent] Delete result:', result);
+			return new Response(JSON.stringify({ status: 'bot removed, group deleted from DB', result }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+	}
+
+	// Handle member join (welcome messages)
 	if (groupPayload.type === 'join' && groupPayload.group && groupPayload.participants) {
 		const groupId = groupPayload.group.id;
 		const joinedParticipants = groupPayload.participants;

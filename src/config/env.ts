@@ -26,7 +26,10 @@ export async function getWorkerEnv(env: any) {
 	if (!APIkey) throw new Error('X_API_KEY environment variable is missing or empty.');
 	if (!openrouterKey) throw new Error('OPENROUTER_API_KEY environment variable is missing or empty.');
 
-	return { baseUrl, session, APIkey, openrouterKey };
+	// Cobalt API URL (optional, defaults to https://cobalt.tools)
+	const cobaltApiUrl = env.COBALT_API_URL || 'https://cobalt.tools';
+
+	return { baseUrl, session, APIkey, openrouterKey, cobaltApiUrl };
 }
 
 // Fungsi untuk cek apakah pesan dari grup/individu yang diizinkan

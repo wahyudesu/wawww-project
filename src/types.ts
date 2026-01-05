@@ -19,6 +19,7 @@ export interface WorkerEnv {
 	baseUrl: string;
 	session: string;
 	openrouterKey: string;
+	cobaltApiUrl: string;
 }
 
 export interface WahaConfig {
@@ -181,6 +182,23 @@ export interface BitcoinPriceResponse {
 		usd?: number;
 		idr?: number;
 	};
+}
+
+// ==================== MEDIA DOWNLOAD TYPES ====================
+
+export interface MediaDownloadResult {
+	type: 'video' | 'image';
+	url: string; // Direct download URL
+	thumbnail?: string; // Optional thumbnail
+	caption?: string; // Optional caption from post
+	filename: string;
+}
+
+export interface CobaltApiResponse {
+	status: 'redirect' | 'stream' | 'error';
+	url?: string;
+	filename?: string;
+	// Add other fields as needed based on actual API response
 }
 
 // ==================== DATABASE TYPES ====================

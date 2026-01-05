@@ -45,6 +45,18 @@ export {
 	type ParticipantData,
 } from './lib/in-group';
 
+// Groups Handler (Bot join/leave events)
+export {
+	handleGroupEvent as handleBotGroupEvent,
+	handleBotJoinGroup,
+	handleBotLeaveGroup,
+	isGroupV2JoinEvent,
+	isGroupV2ParticipantsEvent,
+	isBotRemovedEvent,
+	type GroupV2JoinEvent,
+	type GroupV2ParticipantsEvent,
+} from './groups-handler';
+
 // Database queries & services
 export * as dbQueries from '../db/queries';
 export { GroupService, createGroupService } from './lib/groupService';

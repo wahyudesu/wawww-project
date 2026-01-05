@@ -4,6 +4,7 @@
  */
 
 import { WahaChatClient } from '../functions/lib/chatting';
+import { fetchWithRetry } from '../utils/retry';
 
 export class GroupAdminService {
 	private baseUrl: string;
@@ -21,13 +22,18 @@ export class GroupAdminService {
 	 */
 	async isAdmin(groupId: string, userId: string): Promise<boolean> {
 		try {
-			const response = await fetch(`${this.baseUrl}/api/${this.session}/groups/${groupId}/participants`, {
-				method: 'GET',
-				headers: {
-					accept: '*/*',
-					'X-Api-Key': this.apiKey,
+			const response = await fetchWithRetry(
+				`${this.baseUrl}/api/${this.session}/groups/${groupId}/participants`,
+				{
+					method: 'GET',
+					headers: {
+						accept: '*/*',
+						'X-Api-Key': this.apiKey,
+					},
 				},
-			});
+				3, // max retries
+				2000, // initial delay (2 seconds)
+			);
 
 			if (!response.ok) {
 				console.error('Failed to fetch participants for admin check:', response.statusText);
@@ -42,10 +48,25 @@ export class GroupAdminService {
 
 			// Find user and check if they are admin
 			const user = participantsJson.find((p: any) => {
-				const phoneId = p.jid || p.id;
-				const formattedId = phoneId.replace('@s.whatsapp.net', '@c.us');
-				const normalizedUserId = userId.replace('@s.whatsapp.net', '@c.us');
-				return formattedId === normalizedUserId || p.id === normalizedUserId || phoneId === normalizedUserId;
+				// Normalize userId for comparison
+				let normalizedUserId = userId.replace('@s.whatsapp.net', '@c.us').replace('@lid', '');
+
+				// Check multiple possible ID fields
+				const phoneId = p.jid || p.id || p.phoneNumber;
+				const formattedId = phoneId?.replace('@s.whatsapp.net', '@c.us').replace('@lid', '');
+
+				// Extract just the number part if it contains @
+				const userIdNumber = normalizedUserId.split('@')[0];
+				const participantNumber = formattedId?.split('@')[0] || phoneId?.split('@')[0];
+
+				return (
+					formattedId === normalizedUserId ||
+					p.id === normalizedUserId ||
+					phoneId === normalizedUserId ||
+					userIdNumber === participantNumber ||
+					p.phoneNumber === userId ||
+					p.phoneNumber?.includes(userIdNumber)
+				);
 			});
 
 			if (!user) {
@@ -64,6 +85,11 @@ export class GroupAdminService {
 	 * Check admin role from Waha user object
 	 */
 	private checkAdminRole(user: any): boolean {
+		// Waha API format: admin field can be "admin", "superadmin", or null
+		if (user.admin === 'admin' || user.admin === 'superadmin') {
+			return true;
+		}
+
 		const allStringValues = Object.values(user).filter((val) => typeof val === 'string') as string[];
 		const containsAdminInString = allStringValues.some(
 			(val) => val.toLowerCase().includes('admin') || val.toLowerCase().includes('moderator') || val.toLowerCase().includes('owner'),

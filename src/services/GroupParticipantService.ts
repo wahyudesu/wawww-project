@@ -3,6 +3,8 @@
  * Handles participant operations (get participants, mention all)
  */
 
+import { fetchWithRetry } from '../utils/retry';
+
 // Blacklist configuration for mention all
 const MENTION_BLACKLIST = [
 	'6285655268926',
@@ -24,19 +26,25 @@ export class GroupParticipantService {
 	}
 
 	/**
-	 * Get all group participants
+	 * Get all group participants with retry logic
 	 */
 	async getParticipants(groupId: string): Promise<string[]> {
-		const response = await fetch(`${this.baseUrl}/api/${this.session}/groups/${groupId}/participants`, {
-			method: 'GET',
-			headers: {
-				accept: '*/*',
-				'X-Api-Key': this.apiKey,
+		const response = await fetchWithRetry(
+			`${this.baseUrl}/api/${this.session}/groups/${groupId}/participants`,
+			{
+				method: 'GET',
+				headers: {
+					accept: '*/*',
+					'X-Api-Key': this.apiKey,
+				},
 			},
-		});
+			3, // max retries
+			2000, // initial delay (2 seconds)
+		);
 
 		if (!response.ok) {
-			throw new Error(`Failed to fetch participants: ${response.statusText}`);
+			const errorText = await response.text();
+			throw new Error(`Failed to fetch participants: ${response.statusText} - ${errorText}`);
 		}
 
 		const participantsJson = await response.json();
