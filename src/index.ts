@@ -5,6 +5,7 @@ import { handleJoinGroupEvent } from './functions/lib/in-group';
 import { handleGroupEvent, isGroupV2ParticipantsEvent, isBotRemovedEvent } from './functions/groups-handler';
 import { parseCommand, getCommand } from './commands';
 import { isGroupChat } from './config/waha';
+import { checkAnswer } from './commands/handlers/math-quiz-manager';
 import './commands/registry'; // Register all commands
 
 const corsHeaders = {
@@ -31,6 +32,64 @@ export default {
 	},
 };
 
+async function handleListResponse(payload: any, client: any): Promise<Response> {
+	const chatId = payload.from;
+	const selectedRowId = payload.list?.rowId;
+
+	if (!selectedRowId) {
+		return new Response(JSON.stringify({ status: 'invalid list response' }), { status: 400, headers: corsHeaders });
+	}
+
+	// Check if this is a math quiz answer
+	if (selectedRowId.startsWith('math_q')) {
+		const result = checkAnswer(chatId, selectedRowId);
+
+		if (result) {
+			// Send feedback message
+			await client.sendText({
+				chatId,
+				text: result.message,
+			});
+
+			// If there's a next question, send it as an interactive list
+			if (result.nextQuestion) {
+				const { getCurrentQuestion } = await import('./commands/handlers/math-quiz-manager');
+				const current = getCurrentQuestion(chatId);
+
+				if (current) {
+					const questionNum = current.index + 1;
+					const sections = [
+						{
+							title: `🧮 Soal ${questionNum}: ${result.nextQuestion.question}`,
+							rows: result.nextQuestion.options.map((option: string, index: number) => ({
+								title: `${String.fromCharCode(65 + index)}. ${option}`,
+								rowId: `math_q${questionNum + 1}_a${index}`,
+								description: `Pilih jawaban ${String.fromCharCode(65 + index)}`,
+							})),
+						},
+					];
+
+					await client.sendList({
+						chatId,
+						title: `🧮 Kuis Matematika - Soal ${questionNum}`,
+						description: `Pilih jawaban yang benar:`,
+						button: '📝 Pilih Jawaban',
+						sections,
+					});
+				}
+			}
+
+			return new Response(JSON.stringify({ status: 'answer checked', isCorrect: result.isCorrect, quizCompleted: result.quizCompleted }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+	}
+
+	return new Response(JSON.stringify({ status: 'list response received' }), { status: 200, headers: corsHeaders });
+}
+
+
 async function handleEvent(request: Request, env: any): Promise<Response> {
 	let data: any;
 	try {
@@ -49,6 +108,11 @@ async function handleEvent(request: Request, env: any): Promise<Response> {
 
 	// Create chat client
 	const client = await createChatClient(env);
+
+	// Handle list response events (for math quiz answers)
+	if (data.event === 'message.upsert' && payload?.type === 'list_response') {
+		return await handleListResponse(payload, client);
+	}
 
 	// Handle group join events
 	if (data.event === 'group.v2.participants') {

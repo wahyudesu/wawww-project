@@ -21,6 +21,7 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 /math easy - Kuis matematika (mudah)
 /math hard - Kuis matematika (sulit)
 /link <url> - Download media (YT, TikTok, IG, FB)
+/settings - Lihat pengaturan grup
 /dev - Info developer
 /help - Tampilkan bantuan ini
 

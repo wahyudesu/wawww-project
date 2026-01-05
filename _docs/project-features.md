@@ -93,6 +93,7 @@
 - [x] /math, /math easy, /math medium, /math hard
 - [x] /link
 - [x] /set
+- [x] /settings
 - [x] /help
 - [x] /anime
 - [x] /dev

@@ -18,6 +18,7 @@ import opengroupHandler from './handlers/opengroup';
 import debugadminHandler from './handlers/debugadmin';
 import aiHandler from './handlers/ai';
 import setHandler from './handlers/set';
+import settingsHandler from './handlers/settings';
 import linkHandler from './handlers/link';
 import animeHandler from './handlers/anime';
 import { pagiHandler, siangHandler, malamHandler } from './handlers/greetings';
@@ -66,22 +67,7 @@ registerCommand('/bitcoin', {
 registerCommand('/math', {
 	handler: mathHandler,
 	groupOnly: true,
-	description: 'Math quiz (medium)',
-});
-registerCommand('/math easy', {
-	handler: mathHandler,
-	groupOnly: true,
-	description: 'Math quiz (easy)',
-});
-registerCommand('/math medium', {
-	handler: mathHandler,
-	groupOnly: true,
-	description: 'Math quiz (medium)',
-});
-registerCommand('/math hard', {
-	handler: mathHandler,
-	groupOnly: true,
-	description: 'Math quiz (hard)',
+	description: 'Math quiz (easy/medium/hard)',
 });
 registerCommand('/dev', {
 	handler: devHandler,
@@ -127,6 +113,11 @@ registerCommand('/set', {
 	adminOnly: true,
 	groupOnly: true,
 	description: 'Manage group settings',
+});
+registerCommand('/settings', {
+	handler: settingsHandler,
+	groupOnly: true,
+	description: 'View group settings',
 });
 registerCommand('/link', {
 	handler: linkHandler,
