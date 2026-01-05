@@ -42,18 +42,6 @@
 	],
 
 	/**
-	 * KV Namespaces
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#kv-namespaces
-	 */
-	"kv_namespaces": [
-		{
-			"binding": "RATE_LIMIT_KV",
-			"id": "RATE_LIMIT_KV_ID",  // TODO: Replace with actual KV namespace ID
-			"preview_id": "RATE_LIMIT_KV_PREVIEW_ID"  // TODO: Replace with actual preview KV namespace ID
-		}
-	],
-
-	/**
 	 * Cron Triggers
 	 * https://developers.cloudflare.com/workers/configuration/cron-triggers/
 	 */

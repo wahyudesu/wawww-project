@@ -6,7 +6,6 @@ declare namespace Cloudflare {
 		mainModule: typeof import("./src/index");
 	}
 	interface Env {
-		RATE_LIMIT_KV: KVNamespace;
 		COBALT_API_URL: "https://cobalt.tools";
 		DB: D1Database;
 		api_key: SecretsStoreSecret;
