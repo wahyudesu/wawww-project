@@ -35,20 +35,38 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 	const parsed = text?.split(' ') || [];
 	const args = parsed.slice(1); // Skip '/set'
 
-	if (args.length < 2) {
+	// Show help if no arguments provided
+	if (args.length === 0) {
 		await client.sendText({
 			chatId,
 			text: `⚙️ *Pengaturan Grup*
 
-Usage:
-• /set tagall admin - Hanya admin yang bisa pakai tagall
-• /set tagall member - Semua orang bisa pakai tagall
+Penggunaan: /set <opsi> <nilai>
+
+Opsi yang tersedia:
+• /set tagall admin - Hanya admin yang bisa tagall
+• /set tagall member - Semua bisa tagall
 • /set welcome on - Aktifkan pesan welcome
 • /set welcome off - Matikan pesan welcome
 • /set sholat on - Aktifkan reminder sholat
 • /set sholat off - Matikan reminder sholat`,
 		});
 		return new Response(JSON.stringify({ status: 'help shown' }), { status: 200 });
+	}
+
+	// Show help if insufficient arguments
+	if (args.length < 2) {
+		await client.sendText({
+			chatId,
+			text: `❌ Format tidak lengkap.
+
+Penggunaan: /set <opsi> <nilai>
+
+Contoh: /set tagall admin
+
+Ketik /set untuk melihat semua opsi yang tersedia.`,
+		});
+		return new Response(JSON.stringify({ status: 'invalid format' }), { status: 200 });
 	}
 
 	const [setting, value] = args;
@@ -148,7 +166,7 @@ Usage:
 			} else {
 				await client.sendText({
 					chatId,
-					text: '❌ Nilai tidak valid. Gunakan: /set tagall admin atau /set tagall member',
+					text: '❌ Nilai tidak valid. Gunakan: admin atau member',
 				});
 			}
 			break;
@@ -169,7 +187,7 @@ Usage:
 			} else {
 				await client.sendText({
 					chatId,
-					text: '❌ Nilai tidak valid. Gunakan: /set welcome on atau /set welcome off',
+					text: '❌ Nilai tidak valid. Gunakan: on atau off',
 				});
 			}
 			break;
@@ -190,7 +208,7 @@ Usage:
 			} else {
 				await client.sendText({
 					chatId,
-					text: '❌ Nilai tidak valid. Gunakan: /set sholat on atau /set sholat off',
+					text: '❌ Nilai tidak valid. Gunakan: on atau off',
 				});
 			}
 			break;
@@ -198,15 +216,9 @@ Usage:
 		default: {
 			await client.sendText({
 				chatId,
-				text: `⚙️ *Pengaturan Grup*
+				text: `❌ Opsi tidak tersedia.
 
-Pengaturan yang tersedia:
-• /set tagall admin - Hanya admin yang bisa pakai tagall
-• /set tagall member - Semua orang bisa pakai tagall
-• /set welcome on - Aktifkan pesan welcome
-• /set welcome off - Matikan pesan welcome
-• /set sholat on - Aktifkan reminder sholat
-• /set sholat off - Matikan reminder sholat`,
+Ketik /set untuk melihat semua opsi yang tersedia.`,
 			});
 		}
 	}

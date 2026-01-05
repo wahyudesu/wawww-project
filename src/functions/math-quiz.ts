@@ -7,6 +7,8 @@ import { WahaChatClient, type ListSection, type ListRow } from './lib/chatting';
 
 // ==================== TYPES ====================
 
+export type MathDifficulty = 'easy' | 'medium' | 'hard';
+
 export interface MathQuestion {
 	question: string;
 	options: string[];
@@ -23,10 +25,11 @@ export interface MathQuizState {
 // ==================== MATH QUIZ GENERATION ====================
 
 /**
- * Generate random math questions
+ * Generate random math questions with difficulty levels
  * @param count Number of questions to generate
+ * @param difficulty Difficulty level: 'easy', 'medium', or 'hard'
  */
-export function generateMathQuestions(count: number = 3): MathQuestion[] {
+export function generateMathQuestions(count: number = 3, difficulty: MathDifficulty = 'medium'): MathQuestion[] {
 	const questions: MathQuestion[] = [];
 	const operations = ['+', '-', '×'];
 
@@ -37,36 +40,121 @@ export function generateMathQuestions(count: number = 3): MathQuestion[] {
 		let correctAnswer: number;
 		let question: string;
 
-		switch (operation) {
-			case '+':
-				num1 = Math.floor(Math.random() * 50) + 1;
-				num2 = Math.floor(Math.random() * 50) + 1;
-				correctAnswer = num1 + num2;
-				question = `${num1} + ${num2} = ?`;
+		// Adjust number ranges based on difficulty
+		switch (difficulty) {
+			case 'easy':
+				// Easy: Simple numbers (1-20 for +/-, 1-10 for ×)
+				switch (operation) {
+					case '+':
+						num1 = Math.floor(Math.random() * 20) + 1;
+						num2 = Math.floor(Math.random() * 20) + 1;
+						correctAnswer = num1 + num2;
+						question = `${num1} + ${num2} = ?`;
+						break;
+					case '-':
+						num1 = Math.floor(Math.random() * 20) + 5;
+						num2 = Math.floor(Math.random() * num1);
+						correctAnswer = num1 - num2;
+						question = `${num1} - ${num2} = ?`;
+						break;
+					case '×':
+						num1 = Math.floor(Math.random() * 10) + 1;
+						num2 = Math.floor(Math.random() * 10) + 1;
+						correctAnswer = num1 * num2;
+						question = `${num1} × ${num2} = ?`;
+						break;
+					default:
+						num1 = Math.floor(Math.random() * 20) + 1;
+						num2 = Math.floor(Math.random() * 20) + 1;
+						correctAnswer = num1 + num2;
+						question = `${num1} + ${num2} = ?`;
+				}
 				break;
-			case '-':
-				num1 = Math.floor(Math.random() * 50) + 10;
-				num2 = Math.floor(Math.random() * num1); // Ensure positive result
-				correctAnswer = num1 - num2;
-				question = `${num1} - ${num2} = ?`;
+
+			case 'medium':
+				// Medium: Medium numbers (1-100 for +/-, 1-12 for ×)
+				switch (operation) {
+					case '+':
+						num1 = Math.floor(Math.random() * 100) + 1;
+						num2 = Math.floor(Math.random() * 100) + 1;
+						correctAnswer = num1 + num2;
+						question = `${num1} + ${num2} = ?`;
+						break;
+					case '-':
+						num1 = Math.floor(Math.random() * 100) + 10;
+						num2 = Math.floor(Math.random() * num1);
+						correctAnswer = num1 - num2;
+						question = `${num1} - ${num2} = ?`;
+						break;
+					case '×':
+						num1 = Math.floor(Math.random() * 12) + 1;
+						num2 = Math.floor(Math.random() * 12) + 1;
+						correctAnswer = num1 * num2;
+						question = `${num1} × ${num2} = ?`;
+						break;
+					default:
+						num1 = Math.floor(Math.random() * 100) + 1;
+						num2 = Math.floor(Math.random() * 100) + 1;
+						correctAnswer = num1 + num2;
+						question = `${num1} + ${num2} = ?`;
+				}
 				break;
-			case '×':
-				num1 = Math.floor(Math.random() * 12) + 1;
-				num2 = Math.floor(Math.random() * 12) + 1;
-				correctAnswer = num1 * num2;
-				question = `${num1} × ${num2} = ?`;
+
+			case 'hard':
+				// Hard: Larger numbers (1-500 for +/-, 1-20 for ×) and include division
+				const includeDivision = Math.random() > 0.5;
+
+				if (includeDivision) {
+					// Division: Generate clean division problems
+					num2 = Math.floor(Math.random() * 12) + 2;
+					correctAnswer = Math.floor(Math.random() * 20) + 1;
+					num1 = num2 * correctAnswer;
+					question = `${num1} ÷ ${num2} = ?`;
+				} else {
+					switch (operation) {
+						case '+':
+							num1 = Math.floor(Math.random() * 500) + 100;
+							num2 = Math.floor(Math.random() * 500) + 100;
+							correctAnswer = num1 + num2;
+							question = `${num1} + ${num2} = ?`;
+							break;
+						case '-':
+							num1 = Math.floor(Math.random() * 500) + 100;
+							num2 = Math.floor(Math.random() * num1);
+							correctAnswer = num1 - num2;
+							question = `${num1} - ${num2} = ?`;
+							break;
+						case '×':
+							num1 = Math.floor(Math.random() * 20) + 10;
+							num2 = Math.floor(Math.random() * 15) + 2;
+							correctAnswer = num1 * num2;
+							question = `${num1} × ${num2} = ?`;
+							break;
+						default:
+							num1 = Math.floor(Math.random() * 500) + 100;
+							num2 = Math.floor(Math.random() * 500) + 100;
+							correctAnswer = num1 + num2;
+							question = `${num1} + ${num2} = ?`;
+					}
+				}
 				break;
+
 			default:
-				num1 = Math.floor(Math.random() * 50) + 1;
-				num2 = Math.floor(Math.random() * 50) + 1;
+				// Default to medium
+				num1 = Math.floor(Math.random() * 100) + 1;
+				num2 = Math.floor(Math.random() * 100) + 1;
 				correctAnswer = num1 + num2;
 				question = `${num1} + ${num2} = ?`;
 		}
 
 		// Generate wrong options
 		const options = [correctAnswer];
+
+		// Generate plausible wrong answers based on difficulty
+		const offsetRange = difficulty === 'easy' ? 5 : difficulty === 'medium' ? 15 : 30;
+
 		while (options.length < 4) {
-			const offset = Math.floor(Math.random() * 21) - 10; // -10 to +10
+			const offset = Math.floor(Math.random() * offsetRange * 2) - offsetRange;
 			const wrongAnswer = correctAnswer + offset;
 			if (wrongAnswer !== correctAnswer && wrongAnswer >= 0 && !options.includes(wrongAnswer)) {
 				options.push(wrongAnswer);
@@ -131,19 +219,25 @@ function mathQuestionToListSection(question: MathQuestion, questionNumber: numbe
  * @param chatId Target chat ID
  * @param replyToMessageId Message ID to reply to
  * @param questions Array of math questions
+ * @param difficulty Difficulty level
  */
 export async function sendMathQuizAsList(
 	client: WahaChatClient,
 	chatId: string,
 	replyToMessageId: string,
 	questions: MathQuestion[],
+	difficulty: MathDifficulty = 'medium',
 ): Promise<any> {
 	// Convert questions to list sections
 	const sections: ListSection[] = questions.map((q, index) => mathQuestionToListSection(q, index + 1));
 
+	// Difficulty emoji
+	const difficultyEmoji = difficulty === 'easy' ? '😊' : difficulty === 'medium' ? '🤔' : '🔥';
+	const difficultyLabel = difficulty === 'easy' ? 'Mudah' : difficulty === 'medium' ? 'Sedang' : 'Sulit';
+
 	const listMessage = await client.sendList({
 		chatId,
-		title: '🧮 Kuis Matematika Interaktif',
+		title: `🧮 Kuis Matematika - ${difficultyLabel} ${difficultyEmoji}`,
 		description: `Pilih jawaban yang benar dari ${questions.length} soal berikut:`,
 		button: '📝 Pilih Jawaban',
 		sections,
@@ -159,17 +253,19 @@ export async function sendMathQuizAsList(
  * @param chatId Target chat ID
  * @param replyToMessageId Message ID to reply to
  * @param questionCount Number of questions (default: 3)
+ * @param difficulty Difficulty level (default: 'medium')
  */
 export async function handleMathQuizCommand(
 	client: WahaChatClient,
 	chatId: string,
 	replyToMessageId: string,
 	questionCount: number = 3,
+	difficulty: MathDifficulty = 'medium',
 ): Promise<void> {
-	const questions = generateMathQuestions(questionCount);
+	const questions = generateMathQuestions(questionCount, difficulty);
 
 	// Send as interactive list
-	await sendMathQuizAsList(client, chatId, replyToMessageId, questions);
+	await sendMathQuizAsList(client, chatId, replyToMessageId, questions, difficulty);
 }
 
 // ==================== ANSWER CHECKING ====================

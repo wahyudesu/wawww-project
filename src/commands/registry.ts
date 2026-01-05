@@ -19,6 +19,7 @@ import debugadminHandler from './handlers/debugadmin';
 import aiHandler from './handlers/ai';
 import setHandler from './handlers/set';
 import linkHandler from './handlers/link';
+import animeHandler from './handlers/anime';
 import { pagiHandler, siangHandler, malamHandler } from './handlers/greetings';
 
 // Register all commands
@@ -65,7 +66,22 @@ registerCommand('/bitcoin', {
 registerCommand('/math', {
 	handler: mathHandler,
 	groupOnly: true,
-	description: 'Math quiz',
+	description: 'Math quiz (medium)',
+});
+registerCommand('/math easy', {
+	handler: mathHandler,
+	groupOnly: true,
+	description: 'Math quiz (easy)',
+});
+registerCommand('/math medium', {
+	handler: mathHandler,
+	groupOnly: true,
+	description: 'Math quiz (medium)',
+});
+registerCommand('/math hard', {
+	handler: mathHandler,
+	groupOnly: true,
+	description: 'Math quiz (hard)',
 });
 registerCommand('/dev', {
 	handler: devHandler,
@@ -116,4 +132,9 @@ registerCommand('/link', {
 	handler: linkHandler,
 	groupOnly: true,
 	description: 'Download media from YouTube, TikTok, Instagram, Facebook. Rate limited: 5/hour',
+});
+registerCommand('/anime', {
+	handler: animeHandler,
+	groupOnly: true,
+	description: 'Search anime information from MyAnimeList',
 });

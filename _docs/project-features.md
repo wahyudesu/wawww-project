@@ -18,7 +18,7 @@
 
 | Feature              | Description                                          | Status        |
 | -------------------- | ---------------------------------------------------- | ------------- |
-| Math Quiz (`/math`)  | Generate and send math questions to groups           | still error    |
+| Math Quiz (`/math`)  | Generate and send math questions to groups           | ✅ Implemented |
 | AI Assistant (`/ai`) | Answer questions using AI with context from database | ✅ Implemented |
 
 ## 🧰 Utility Commands
@@ -29,6 +29,7 @@
 | Pantun (`/pantun`)                  | Send random Indonesian pantun            | ✅ Implemented |
 | Daily Prayers (`/doaharian`)        | Send random daily Islamic prayers        | ✅ Implemented |
 | Bitcoin Price (`/bitcoin`)          | Fetch current Bitcoin prices (IDR & USD) | ✅ Implemented |
+| Anime Search (`/anime`)             | Search anime info from MyAnimeList       | ✅ Implemented |
 | Developer Info (`/dev`)             | Send developer info and usage terms      | ✅ Implemented |
 | Help (`/help`)                      | Show list of available commands          | ✅ Implemented |
 
@@ -83,21 +84,19 @@
 - [ ] welcoming group
 
 ## command
-- [x] /pagi, /siang, /malam #greetings 
+- [x] /pagi, /siang, /malam #greetings
 - [x] /tagall /mention all member in groups
-- [ ] /bitcoin
+- [x] /bitcoin
 - [x] /doaharian
 - [x] /pantun
-- [ ] /add /kick
-- [ ] /math
-- [ ] /downloader
-- [ ] /fact
-- [ ] /news
-- [ ] /set
-- [ ] /help
-- [ ] /anime
-- [ ] /dev
-- [ ] 
+- [x] /add /kick
+- [x] /math, /math easy, /math medium, /math hard
+- [x] /link
+- [x] /set
+- [x] /help
+- [x] /anime
+- [x] /dev
+- [x] /ai
 
 ## handler
 - [ ] link detecion -> ads detection
