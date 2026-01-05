@@ -20,6 +20,7 @@ export interface CommandHandler {
 export interface CommandDefinition {
 	handler: CommandHandler;
 	adminOnly?: boolean;
+	groupOnly?: boolean;
 	description?: string;
 }
 

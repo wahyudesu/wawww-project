@@ -230,6 +230,8 @@ export async function fetchAllGroupsAndSave(
 		});
 
 		if (!response.ok) {
+			const errorBody = await response.text();
+			console.error(`Error Response Body:`, errorBody);
 			throw new Error(`Failed to fetch groups: ${response.status} ${response.statusText}`);
 		}
 

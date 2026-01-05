@@ -84,13 +84,13 @@
 
 ## command
 - [ ] /pagi, /siang, /malam #greetings 
-- [ ] /tagall /mention all member in groups
-- [ ] /downloader
+- [x] /tagall /mention all member in groups
 - [ ] /bitcoin
 - [ ] /doaharian
-- [ ] /math
 - [ ] /pantun
 - [ ] /add /kick
+- [ ] /math
+- [ ] /downloader
 - [ ] /fact
 - [ ] /news
 - [ ] /set

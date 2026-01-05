@@ -4,6 +4,7 @@ import { checkToxic, getToxicWarning } from './functions';
 import { handleJoinGroupEvent } from './functions/lib/in-group';
 import { handleGroupEvent, isGroupV2ParticipantsEvent, isBotRemovedEvent } from './functions/groups-handler';
 import { parseCommand, getCommand } from './commands';
+import { isGroupChat } from './config/waha';
 import './commands/registry'; // Register all commands
 
 const corsHeaders = {
@@ -167,6 +168,16 @@ async function handleCommand(
 
 	if (!commandDef) {
 		return new Response(JSON.stringify({ error: 'Unknown command' }), { status: 404, headers: corsHeaders });
+	}
+
+	// Check if command is group-only
+	if (commandDef.groupOnly && !isGroupChat(context.chatId)) {
+		await client.sendText({
+			chatId: context.chatId,
+			text: '❌ Maaf, perintah ini hanya bisa digunakan di grup.',
+			reply_to: context.replyTo,
+		});
+		return new Response(JSON.stringify({ status: 'group only command' }), { status: 200, headers: corsHeaders });
 	}
 
 	try {
