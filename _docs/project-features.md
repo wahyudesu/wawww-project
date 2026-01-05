@@ -83,11 +83,11 @@
 - [ ] welcoming group
 
 ## command
-- [ ] /pagi, /siang, /malam #greetings 
+- [x] /pagi, /siang, /malam #greetings 
 - [x] /tagall /mention all member in groups
 - [ ] /bitcoin
-- [ ] /doaharian
-- [ ] /pantun
+- [x] /doaharian
+- [x] /pantun
 - [ ] /add /kick
 - [ ] /math
 - [ ] /downloader
