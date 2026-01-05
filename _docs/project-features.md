@@ -68,3 +68,38 @@
 1. ✅ Implemented: Feature is fully functional in the current codebase
 2. ⏳ Planned: Feature is documented in requirements but not yet implemented
 3. Features marked as "planned" are mentioned in `_docs/feature.md` but not found in the current implementation
+
+## testing
+
+(in private chat)
+- [x] send text 
+- [x] send image
+- [x] send list interactive
+
+(in group chat)
+- [x] tagall
+- [x] close and open group
+- [x] kick and add person in group
+- [ ] welcoming group
+
+## command
+- [ ] /pagi, /siang, /malam #greetings 
+- [ ] /tagall /mention all member in groups
+- [ ] /downloader
+- [ ] /bitcoin
+- [ ] /doaharian
+- [ ] /math
+- [ ] /pantun
+- [ ] /add /kick
+- [ ] /fact
+- [ ] /news
+- [ ] /set
+- [ ] /help
+- [ ] /anime
+- [ ] /dev
+- [ ] 
+
+## handler
+- [ ] link detecion -> ads detection
+- [ ] toxic detection
+- [ ] reminder sholat

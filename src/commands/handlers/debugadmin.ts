@@ -13,10 +13,11 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 		return new Response(JSON.stringify({ error: 'Participant required' }), { status: 400 });
 	}
 
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
+	const { baseUrl, session, apiKey } = client.getConfig();
 
 	// Get raw participants data to debug
-	const response = await fetch(`${baseUrl}/api/${session}/groups/${chatId}/participants`, {
+	const encodedGroupId = encodeURIComponent(chatId);
+	const response = await fetch(`${baseUrl}/api/${session}/groups/${encodedGroupId}/participants`, {
 		method: 'GET',
 		headers: {
 			accept: '*/*',

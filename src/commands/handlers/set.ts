@@ -29,7 +29,7 @@ interface GroupApiResponse {
 
 const handler: CommandHandler = async (client: WahaChatClient, context: CommandContext) => {
 	const { chatId, participant, text, env } = context;
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
+	const { baseUrl, session, apiKey } = client.getConfig();
 
 	// Parse arguments
 	const parsed = text?.split(' ') || [];

@@ -10,7 +10,7 @@ import { getDb, getGroupByChatId, updateGroupSettings } from '../../db/queries';
 
 const handler: CommandHandler = async (client: WahaChatClient, context: CommandContext) => {
 	const { chatId, participant, env } = context;
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
+	const { baseUrl, session, apiKey } = client.getConfig();
 
 	const participantService = new GroupParticipantService(baseUrl, session, apiKey);
 	const adminService = new GroupAdminService(baseUrl, session, apiKey);

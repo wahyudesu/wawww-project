@@ -14,7 +14,7 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 	}
 
 	const targetNumber = text?.replace('/kick', '').trim() || '';
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
+	const { baseUrl, session, apiKey } = client.getConfig();
 
 	const adminService = new GroupAdminService(baseUrl, session, apiKey);
 	const memberService = new GroupMemberService(baseUrl, session, apiKey);

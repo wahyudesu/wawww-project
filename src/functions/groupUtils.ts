@@ -25,7 +25,7 @@ export async function mentionAll(
 	chatId: string,
 	participants: string[],
 ): Promise<any> {
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
+	const { baseUrl, session, apiKey } = client.getConfig();
 	const participantService = new GroupParticipantService(baseUrl, session, apiKey);
 
 	const filteredParticipants = participantService.filterParticipants(participants);

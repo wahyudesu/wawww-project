@@ -13,7 +13,7 @@ const handler: CommandHandler = async (client: WahaChatClient, context: CommandC
 		return new Response(JSON.stringify({ error: 'Participant required' }), { status: 400 });
 	}
 
-	const { baseUrl, session, apiKey } = client['config'].getConfig();
+	const { baseUrl, session, apiKey } = client.getConfig();
 
 	// Check if user is admin
 	const adminCheck = await isAdmin(baseUrl, session, chatId, participant, apiKey);

@@ -99,6 +99,17 @@ export class WahaChatClient {
 	}
 
 	/**
+	 * Get config object (public method for service classes)
+	 */
+	public getConfig(): { baseUrl: string; session: string; apiKey: string } {
+		return {
+			baseUrl: this.getBaseUrl(),
+			session: this.getSession(),
+			apiKey: this.getApiKey(),
+		};
+	}
+
+	/**
 	 * Get standard headers for API requests
 	 */
 	private getHeaders(): HeadersInit {

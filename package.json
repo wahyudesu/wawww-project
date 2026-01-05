@@ -9,7 +9,9 @@
 		"cf-typegen": "wrangler types",
 		"generate": "drizzle-kit generate",
 		"migrate": "drizzle-kit migrate",
-		"push": "drizzle-kit push"
+		"push": "drizzle-kit push",
+		"test": "bun test",
+		"test:sequential": "bun test --test-name-pattern='.*'"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",

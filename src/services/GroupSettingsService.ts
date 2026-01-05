@@ -23,7 +23,7 @@ export class GroupSettingsService {
 		const response = await fetch(endpoint, {
 			method: 'PUT',
 			headers: {
-				accept: '*/*',
+				accept: 'application/json',
 				'Content-Type': 'application/json',
 				'X-Api-Key': this.apiKey,
 			},
@@ -31,16 +31,12 @@ export class GroupSettingsService {
 		});
 
 		if (!response.ok) {
-			const result = await response.json();
-			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${JSON.stringify(result)}`);
+			const error = await response.text();
+			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${error}`);
 		}
 
-		const result: any = await response.json();
-		if (result === true || result.adminsOnly === true) {
-			return { success: true, adminsOnly: true };
-		} else {
-			throw new Error('Failed to update group settings.');
-		}
+		// Success - return simple success object
+		return { success: true, adminsOnly: true };
 	}
 
 	/**
@@ -52,7 +48,7 @@ export class GroupSettingsService {
 		const response = await fetch(endpoint, {
 			method: 'PUT',
 			headers: {
-				accept: '*/*',
+				accept: 'application/json',
 				'Content-Type': 'application/json',
 				'X-Api-Key': this.apiKey,
 			},
@@ -60,15 +56,11 @@ export class GroupSettingsService {
 		});
 
 		if (!response.ok) {
-			const result = await response.json();
-			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${JSON.stringify(result)}`);
+			const error = await response.text();
+			throw new Error(`HTTP ${response.status}: ${response.statusText} - ${error}`);
 		}
 
-		const result: any = await response.json();
-		if (result === true || result.adminsOnly === false) {
-			return { success: true, adminsOnly: false };
-		} else {
-			throw new Error('Failed to update group settings.');
-		}
+		// Success - return simple success object
+		return { success: true, adminsOnly: false };
 	}
 }
